@@ -9,16 +9,35 @@ services:
       POSTGRES_PASSWORD: lifeos
 
     ports:
-      - '5432:5432'
+      - "5432:5432"
 
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U lifeos -d lifeos']
+      test: ["CMD-SHELL", "pg_isready -U lifeos -d lifeos"]
       interval: 5s
       timeout: 5s
       retries: 5
+
+  api:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+
+    container_name: lifeos-api
+
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: postgresql://lifeos:lifeos@postgres:5432/lifeos?schema=public
+
+    ports:
+      - "3001:3000"
+
+    depends_on:
+      postgres:
+        condition: service_healthy
 
 volumes:
   postgres_data:
