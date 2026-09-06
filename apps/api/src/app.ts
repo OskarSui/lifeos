@@ -2,6 +2,7 @@ import express from 'express';
 import { prisma } from './lib/prisma.js';
 import { notFoundHandler } from './middleware/notFound.js';
 import { errorHandler } from './middleware/errorHandler.js';
+import taskRoutes from './routes/taskRoutes.js';
 
 export const app = express();
 
@@ -22,6 +23,8 @@ app.get('/health', async (_req, res, next) => {
     next(error);
   }
 });
+
+app.use('/api/v1/tasks', taskRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
