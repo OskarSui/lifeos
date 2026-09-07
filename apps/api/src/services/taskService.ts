@@ -1,6 +1,7 @@
+import { Prisma } from '@prisma/client';
 import { AppError } from '../errors/AppError.js';
 import { taskRepository } from '../repositories/taskRepository.js';
-import type { CreateTaskInput } from '../types/task.js';
+import type { CreateTaskInput, UpdateTaskInput } from '../types/task.js';
 
 export const taskService = {
   listTasks(userId?: string) {
@@ -26,5 +27,40 @@ export const taskService = {
       ...input,
       title,
     });
+  },
+
+  async updateTask(id: string, input: UpdateTaskInput) {
+    const task = await taskRepository.findById(id);
+
+    if (!task) {
+      throw new AppError('Task not found', 404, 'TASK_NOT_FOUND');
+    }
+
+    if (input.title !== undefined && !input.title.trim()) {
+      throw new AppError('Task title is required', 400, 'TASK_TITLE_REQUIRED');
+    }
+
+    try {
+      return await taskRepository.update(id, {
+        ...input,
+        title: input.title?.trim(),
+      });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2003') {
+          throw new AppError(
+            'Referenced goal was not found',
+            400,
+            'GOAL_NOT_FOUND',
+          );
+        }
+
+        if (error.code === 'P2025') {
+          throw new AppError('Task not found', 404, 'TASK_NOT_FOUND');
+        }
+      }
+
+      throw error;
+    }
   },
 };

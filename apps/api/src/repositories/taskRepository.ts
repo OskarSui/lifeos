@@ -1,5 +1,5 @@
 import { prisma } from '../lib/prisma.js';
-import type { CreateTaskInput } from '../types/task.js';
+import type { CreateTaskInput, UpdateTaskInput } from '../types/task.js';
 
 export const taskRepository = {
   findMany(userId?: string) {
@@ -19,6 +19,17 @@ export const taskRepository = {
         goalId: input.goalId,
         dueDate: input.dueDate,
       },
+    });
+  },
+
+  findById(id: string) {
+    return prisma.task.findUnique({ where: { id } });
+  },
+
+  update(id: string, input: UpdateTaskInput) {
+    return prisma.task.update({
+      where: { id },
+      data: input,
     });
   },
 };

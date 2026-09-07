@@ -9,6 +9,15 @@ export interface CreateTaskInput {
   dueDate?: Date;
 }
 
+export interface UpdateTaskInput {
+  title?: string;
+  description?: string | null;
+  status?: TaskStatus;
+  priority?: TaskPriority;
+  goalId?: string | null;
+  dueDate?: Date | null;
+}
+
 export interface TaskResponse {
   id: string;
   userId: string;
