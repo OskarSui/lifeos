@@ -32,6 +32,11 @@ daily_focus
 # Prisma
 "Как превратить это в SQL?"
 
+# Tasks CRUD — GET /tasks
+
+Route → Controller → Service → Repository → Prisma → PostgreSQL → Response
+
+
 # Testing:
 Schema → Test → Middleware → Controller → Service
 

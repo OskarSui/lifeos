@@ -3,6 +3,10 @@ import { taskRepository } from '../repositories/taskRepository.js';
 import type { CreateTaskInput } from '../types/task.js';
 
 export const taskService = {
+  listTasks(userId?: string) {
+    return taskRepository.findMany(userId);
+  },
+
   async createTask(input: CreateTaskInput) {
     const title = input.title.trim();
 
