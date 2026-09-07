@@ -27,4 +27,14 @@ export const taskService = {
   async getTasks(query: GetTasksQuery) {
     return taskRepository.findMany(query);
   },
+
+  async getTaskById(id: string, userId: string) {
+    const task = await taskRepository.findById(id, userId);
+
+    if (!task) {
+      throw new AppError('Task not found', 404, 'TASK_NOT_FOUND');
+    }
+
+    return task;
+  },
 };

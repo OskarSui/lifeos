@@ -1,5 +1,6 @@
 curl -sS -i -X POST http://localhost:3001/api/v1/tasks -H 'Content-Type: application/json' -d '{"userId":"112c9068-a834-4f5c-bb90-4c7e6a69fee2","title":"Task API","description":"Implement task endpoints","priority":"HIGH"}'
 
+
 The error was caused by an empty database. Prisma was connected successfully, but the migration had not been applied.
 
 Fixed by running:

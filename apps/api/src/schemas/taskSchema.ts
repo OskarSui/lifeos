@@ -29,4 +29,10 @@ export const getTasksQuerySchema = z.object({
   goalId: z.uuid().optional(),
 });
 
+export const taskIdSchema = z.object({
+  id: z.uuid(),
+});
+
 export type GetTasksQuery = z.infer<typeof getTasksQuerySchema>;
+
+export type TaskIdParams = z.infer<typeof taskIdSchema>;

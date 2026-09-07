@@ -29,4 +29,13 @@ export const taskRepository = {
       },
     });
   },
+
+  findById(id: string, userId: string) {
+    return prisma.task.findFirst({
+      where: {
+        id,
+        userId,
+      },
+    });
+  },
 };
