@@ -1,16 +1,12 @@
 import type { RequestHandler } from 'express';
 import { taskService } from '../services/taskService.js';
+import type { CreateTaskRequest } from '../schemas/taskSchema.js';
 
 export const createTask: RequestHandler = async (req, res, next) => {
   try {
-    const task = await taskService.createTask({
-      userId: req.body.userId,
-      title: req.body.title,
-      description: req.body.description,
-      priority: req.body.priority,
-      goalId: req.body.goalId,
-      dueDate: req.body.dueDate ? new Date(req.body.dueDate) : undefined,
-    });
+    const body = req.body as CreateTaskRequest;
+
+    const task = await taskService.createTask(body);
 
     res.status(201).json({
       success: true,
