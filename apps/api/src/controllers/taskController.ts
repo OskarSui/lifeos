@@ -1,21 +1,109 @@
 import type { RequestHandler } from 'express';
 import { taskService } from '../services/taskService.js';
+import {
+  getTasksQuerySchema,
+  TaskIdParams,
+  type CreateTaskRequest,
+  type GetTasksQuery,
+  type UpdateTaskRequest,
+} from '../schemas/taskSchema.js';
 
-export const createTask: RequestHandler = async (req, res, next) => {
+type CreateTaskRequestHandler = RequestHandler<
+  Record<string, never>,
+  unknown,
+  CreateTaskRequest
+>;
+
+type GetTasksRequestHandler = RequestHandler<
+  Record<string, never>,
+  unknown,
+  GetTasksQuery
+>;
+
+type GetTaskRequestHandler = RequestHandler<
+  TaskIdParams,
+  unknown,
+  unknown,
+  GetTasksQuery
+>;
+
+type UpdateTaskRequestHandler = RequestHandler<
+  TaskIdParams,
+  unknown,
+  UpdateTaskRequest,
+  GetTasksQuery
+>;
+
+type DeleteTaskRequestHandler = RequestHandler<
+  TaskIdParams,
+  unknown,
+  unknown,
+  GetTasksQuery
+>;
+
+export const createTask: CreateTaskRequestHandler = async (req, res, next) => {
   try {
-    const task = await taskService.createTask({
-      userId: req.body.userId,
-      title: req.body.title,
-      description: req.body.description,
-      priority: req.body.priority,
-      goalId: req.body.goalId,
-      dueDate: req.body.dueDate ? new Date(req.body.dueDate) : undefined,
-    });
+    const task = await taskService.createTask(req.body);
 
     res.status(201).json({
       success: true,
       data: task,
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getTasks: GetTasksRequestHandler = async (req, res, next) => {
+  try {
+    const query = getTasksQuerySchema.parse(req.query);
+
+    const tasks = await taskService.getTasks(query);
+
+    res.status(200).json({
+      success: true,
+      data: tasks,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getTaskById: GetTaskRequestHandler = async (req, res, next) => {
+  try {
+    const task = await taskService.getTaskById(req.params.id, req.query.userId);
+
+    res.status(200).json({
+      success: true,
+      data: task,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateTask: UpdateTaskRequestHandler = async (req, res, next) => {
+  try {
+    const task = await taskService.updateTask(
+      req.params.id,
+      req.query.userId,
+      req.body,
+    );
+
+    res.status(200).json({
+      success: true,
+      data: task,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteTask: DeleteTaskRequestHandler = async (req, res, next) => {
+  try {
+    await taskService.deleteTask(req.params.id, req.query.userId);
+
+    res.status(204).send();
   } catch (error) {
     next(error);
   }

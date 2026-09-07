@@ -6,7 +6,7 @@ COPY package*.json ./
 
 FROM base AS dependencies
 
-RUN npm ci --fetch-retries=5 --fetch-retry-factor=2 --fetch-retry-mintimeout=1000 --fetch-retry-maxtimeout=120000
+RUN npm install
 
 FROM dependencies AS build
 
@@ -16,7 +16,8 @@ COPY src ./src
 COPY prisma ./prisma
 COPY prisma.config.ts ./
 
-ENV DATABASE_URL="postgresql://lifeos:lifeos@localhost:5432/lifeos?schema=public"
+# Prisma needs DATABASE_URL at build time to generate the client
+ENV DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy"
 
 RUN npx prisma generate
 RUN npm run build
