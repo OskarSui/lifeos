@@ -3,6 +3,7 @@ import request from 'supertest';
 
 import { app } from './app.js';
 import { prisma } from './lib/prisma.js';
+import { expectValidationError, taskResponse } from './testHelpers.js';
 
 vi.mock('./lib/prisma.js', () => ({
   prisma: {
@@ -79,18 +80,7 @@ describe('POST /api/v1/tasks', () => {
 
     expect(response.body).toEqual({
       success: true,
-      data: {
-        id: task.id,
-        userId: task.userId,
-        goalId: null,
-        title: task.title,
-        description: task.description,
-        status: task.status,
-        priority: task.priority,
-        dueDate: null,
-        createdAt: task.createdAt.toISOString(),
-        updatedAt: task.updatedAt.toISOString(),
-      },
+      data: taskResponse(task),
     });
 
     expect(mockedPrisma.task.create).toHaveBeenCalledWith({
@@ -140,8 +130,7 @@ describe('POST /api/v1/tasks', () => {
       })
       .expect(400);
 
-    expect(response.body.success).toBe(false);
-    expect(response.body.error.code).toBe('VALIDATION_ERROR');
+    expectValidationError(response);
 
     expect(mockedPrisma.task.create).not.toHaveBeenCalled();
   });
@@ -155,8 +144,7 @@ describe('POST /api/v1/tasks', () => {
       })
       .expect(400);
 
-    expect(response.body.success).toBe(false);
-    expect(response.body.error.code).toBe('VALIDATION_ERROR');
+    expectValidationError(response);
 
     expect(mockedPrisma.task.create).not.toHaveBeenCalled();
   });
@@ -171,8 +159,7 @@ describe('POST /api/v1/tasks', () => {
       })
       .expect(400);
 
-    expect(response.body.success).toBe(false);
-    expect(response.body.error.code).toBe('VALIDATION_ERROR');
+    expectValidationError(response);
 
     expect(mockedPrisma.task.create).not.toHaveBeenCalled();
   });
@@ -186,8 +173,7 @@ describe('POST /api/v1/tasks', () => {
       })
       .expect(400);
 
-    expect(response.body.success).toBe(false);
-    expect(response.body.error.code).toBe('VALIDATION_ERROR');
+    expectValidationError(response);
 
     expect(mockedPrisma.task.create).not.toHaveBeenCalled();
   });
@@ -202,8 +188,7 @@ describe('POST /api/v1/tasks', () => {
       })
       .expect(400);
 
-    expect(response.body.success).toBe(false);
-    expect(response.body.error.code).toBe('VALIDATION_ERROR');
+    expectValidationError(response);
 
     expect(mockedPrisma.task.create).not.toHaveBeenCalled();
   });
@@ -226,20 +211,7 @@ describe('GET /api/v1/tasks', () => {
 
     expect(response.body).toEqual({
       success: true,
-      data: [
-        {
-          id: task.id,
-          userId: task.userId,
-          goalId: null,
-          title: task.title,
-          description: task.description,
-          status: task.status,
-          priority: task.priority,
-          dueDate: null,
-          createdAt: task.createdAt.toISOString(),
-          updatedAt: task.updatedAt.toISOString(),
-        },
-      ],
+      data: [taskResponse(task)],
     });
 
     expect(mockedPrisma.task.findMany).toHaveBeenCalledWith({
@@ -312,8 +284,7 @@ describe('GET /api/v1/tasks', () => {
       })
       .expect(400);
 
-    expect(response.body.success).toBe(false);
-    expect(response.body.error.code).toBe('VALIDATION_ERROR');
+    expectValidationError(response);
 
     expect(mockedPrisma.task.findMany).not.toHaveBeenCalled();
   });
@@ -321,8 +292,7 @@ describe('GET /api/v1/tasks', () => {
   it('returns 400 when userId is missing', async () => {
     const response = await request(app).get('/api/v1/tasks').expect(400);
 
-    expect(response.body.success).toBe(false);
-    expect(response.body.error.code).toBe('VALIDATION_ERROR');
+    expectValidationError(response);
 
     expect(mockedPrisma.task.findMany).not.toHaveBeenCalled();
   });
@@ -345,18 +315,7 @@ describe('GET /api/v1/tasks/:id', () => {
 
     expect(response.body).toEqual({
       success: true,
-      data: {
-        id: task.id,
-        userId: task.userId,
-        goalId: null,
-        title: task.title,
-        description: task.description,
-        status: task.status,
-        priority: task.priority,
-        dueDate: null,
-        createdAt: task.createdAt.toISOString(),
-        updatedAt: task.updatedAt.toISOString(),
-      },
+      data: taskResponse(task),
     });
 
     expect(mockedPrisma.task.findFirst).toHaveBeenCalledWith({
@@ -394,8 +353,7 @@ describe('GET /api/v1/tasks/:id', () => {
       })
       .expect(400);
 
-    expect(response.body.success).toBe(false);
-    expect(response.body.error.code).toBe('VALIDATION_ERROR');
+    expectValidationError(response);
 
     expect(mockedPrisma.task.findFirst).not.toHaveBeenCalled();
   });
@@ -405,8 +363,7 @@ describe('GET /api/v1/tasks/:id', () => {
       .get(`/api/v1/tasks/${task.id}`)
       .expect(400);
 
-    expect(response.body.success).toBe(false);
-    expect(response.body.error.code).toBe('VALIDATION_ERROR');
+    expectValidationError(response);
 
     expect(mockedPrisma.task.findFirst).not.toHaveBeenCalled();
   });
@@ -446,18 +403,7 @@ describe('PATCH /api/v1/tasks/:id', () => {
 
     expect(response.body).toEqual({
       success: true,
-      data: {
-        id: updatedTask.id,
-        userId: updatedTask.userId,
-        goalId: updatedTask.goalId,
-        title: updatedTask.title,
-        description: updatedTask.description,
-        status: updatedTask.status,
-        priority: updatedTask.priority,
-        dueDate: null,
-        createdAt: updatedTask.createdAt.toISOString(),
-        updatedAt: updatedTask.updatedAt.toISOString(),
-      },
+      data: taskResponse(updatedTask),
     });
   });
 
@@ -636,8 +582,7 @@ describe('PATCH /api/v1/tasks/:id', () => {
       .send({})
       .expect(400);
 
-    expect(response.body.success).toBe(false);
-    expect(response.body.error.code).toBe('VALIDATION_ERROR');
+    expectValidationError(response);
 
     expect(mockedPrisma.$transaction).not.toHaveBeenCalled();
   });
@@ -653,8 +598,7 @@ describe('PATCH /api/v1/tasks/:id', () => {
       })
       .expect(400);
 
-    expect(response.body.success).toBe(false);
-    expect(response.body.error.code).toBe('VALIDATION_ERROR');
+    expectValidationError(response);
 
     expect(mockedPrisma.$transaction).not.toHaveBeenCalled();
   });
@@ -667,8 +611,7 @@ describe('PATCH /api/v1/tasks/:id', () => {
       })
       .expect(400);
 
-    expect(response.body.success).toBe(false);
-    expect(response.body.error.code).toBe('VALIDATION_ERROR');
+    expectValidationError(response);
 
     expect(mockedPrisma.$transaction).not.toHaveBeenCalled();
   });
