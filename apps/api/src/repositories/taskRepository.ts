@@ -60,4 +60,13 @@ export const taskRepository = {
       });
     });
   },
+
+  async delete(id: string, userId: string) {
+    return prisma.task.deleteMany({
+      where: {
+        id,
+        userId,
+      },
+    });
+  },
 };

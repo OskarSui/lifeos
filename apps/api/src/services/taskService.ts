@@ -55,4 +55,12 @@ export const taskService = {
 
     return task;
   },
+
+  async deleteTask(id: string, userId: string) {
+    const result = await taskRepository.delete(id, userId);
+
+    if (result.count === 0) {
+      throw new AppError('Task not found', 404, 'TASK_NOT_FOUND');
+    }
+  },
 };

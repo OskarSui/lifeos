@@ -9,6 +9,9 @@ curl -X PATCH \
 "status": "DONE"
 }'
 
+curl -X DELETE \
+ "http://localhost:3001/api/v1/tasks/ade31a3b-3192-42fd-9b53-832608adf3f5?userId=112c9068-a834-4f5c-bb90-4c7e6a69fee2"
+
 The error was caused by an empty database. Prisma was connected successfully, but the migration had not been applied.
 
 Fixed by running:

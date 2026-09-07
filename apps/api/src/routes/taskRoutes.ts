@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import {
   createTask,
+  deleteTask,
   getTaskById,
   getTasks,
   updateTask,
@@ -33,6 +34,13 @@ router.patch(
   validateQuery(getTasksQuerySchema),
   validateBody(updateTaskSchema),
   updateTask,
+);
+
+router.delete(
+  '/:id',
+  validateParams(taskIdSchema),
+  validateQuery(getTasksQuerySchema),
+  deleteTask,
 );
 
 export default router;

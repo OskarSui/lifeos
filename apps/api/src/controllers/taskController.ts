@@ -34,6 +34,13 @@ type UpdateTaskRequestHandler = RequestHandler<
   GetTasksQuery
 >;
 
+type DeleteTaskRequestHandler = RequestHandler<
+  TaskIdParams,
+  unknown,
+  unknown,
+  GetTasksQuery
+>;
+
 export const createTask: CreateTaskRequestHandler = async (req, res, next) => {
   try {
     const task = await taskService.createTask(req.body);
@@ -87,6 +94,16 @@ export const updateTask: UpdateTaskRequestHandler = async (req, res, next) => {
       success: true,
       data: task,
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteTask: DeleteTaskRequestHandler = async (req, res, next) => {
+  try {
+    await taskService.deleteTask(req.params.id, req.query.userId);
+
+    res.status(204).send();
   } catch (error) {
     next(error);
   }
