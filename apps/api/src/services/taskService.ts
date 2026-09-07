@@ -1,6 +1,10 @@
 import { AppError } from '../errors/AppError.js';
 import { taskRepository } from '../repositories/taskRepository.js';
-import type { CreateTaskInput, GetTasksQuery } from '../types/task.js';
+import type {
+  CreateTaskInput,
+  GetTasksQuery,
+  UpdateTaskInput,
+} from '../types/task.js';
 
 export const taskService = {
   async createTask(input: CreateTaskInput) {
@@ -30,6 +34,20 @@ export const taskService = {
 
   async getTaskById(id: string, userId: string) {
     const task = await taskRepository.findById(id, userId);
+
+    if (!task) {
+      throw new AppError('Task not found', 404, 'TASK_NOT_FOUND');
+    }
+
+    return task;
+  },
+
+  async updateTask(id: string, userId: string, input: UpdateTaskInput) {
+    if (input.title !== undefined) {
+      input.title = input.title.trim();
+    }
+
+    const task = await taskRepository.update(id, userId, input);
 
     if (!task) {
       throw new AppError('Task not found', 404, 'TASK_NOT_FOUND');

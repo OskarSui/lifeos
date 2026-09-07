@@ -5,6 +5,7 @@ import {
   TaskIdParams,
   type CreateTaskRequest,
   type GetTasksQuery,
+  type UpdateTaskRequest,
 } from '../schemas/taskSchema.js';
 
 type CreateTaskRequestHandler = RequestHandler<
@@ -23,6 +24,13 @@ type GetTaskRequestHandler = RequestHandler<
   TaskIdParams,
   unknown,
   unknown,
+  GetTasksQuery
+>;
+
+type UpdateTaskRequestHandler = RequestHandler<
+  TaskIdParams,
+  unknown,
+  UpdateTaskRequest,
   GetTasksQuery
 >;
 
@@ -57,6 +65,23 @@ export const getTasks: GetTasksRequestHandler = async (req, res, next) => {
 export const getTaskById: GetTaskRequestHandler = async (req, res, next) => {
   try {
     const task = await taskService.getTaskById(req.params.id, req.query.userId);
+
+    res.status(200).json({
+      success: true,
+      data: task,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateTask: UpdateTaskRequestHandler = async (req, res, next) => {
+  try {
+    const task = await taskService.updateTask(
+      req.params.id,
+      req.query.userId,
+      req.body,
+    );
 
     res.status(200).json({
       success: true,

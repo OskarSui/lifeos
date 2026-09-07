@@ -1,5 +1,13 @@
 curl -sS -i -X POST http://localhost:3001/api/v1/tasks -H 'Content-Type: application/json' -d '{"userId":"112c9068-a834-4f5c-bb90-4c7e6a69fee2","title":"Task API","description":"Implement task endpoints","priority":"HIGH"}'
 
+curl -X PATCH \
+ "http://localhost:3001/api/v1/tasks/4288aafb-dc65-47c9-b611-520a9bf7f900?userId=112c9068-a834-4f5c-bb90-4c7e6a69fee2" \
+ -H "Content-Type: application/json" \
+ -d '{
+"title": "Build OS API v2",
+"priority": "HIGH",
+"status": "DONE"
+}'
 
 The error was caused by an empty database. Prisma was connected successfully, but the migration had not been applied.
 
@@ -19,26 +27,31 @@ daily_focus
 # Принцип здесь очень важный:
 
 # Zod
+
 "Данные вообще корректной формы?"
 
 # Controller
+
 "Какой HTTP response вернуть?"
 
 # Service
+
 "Разрешена ли эта операция с точки зрения бизнес-логики?"
 
 # Repository
+
 "Как получить/сохранить данные?"
 
 # Prisma
+
 "Как превратить это в SQL?"
 
 # Tasks CRUD — GET /tasks
 
 Route → Controller → Service → Repository → Prisma → PostgreSQL → Response
 
-
 # Testing:
+
 Schema → Test → Middleware → Controller → Service
 
                     HTTP
@@ -76,12 +89,11 @@ Schema → Test → Middleware → Controller → Service
                  Prisma
                      ▼
                 PostgreSQL
-                
+
 taskSchema.test.ts
-        │
-        └── Zod contract
+│
+└── Zod contract
 
 validate.test.ts
-        │
-        └── HTTP validation middleware
-
+│
+└── HTTP validation middleware
