@@ -1,14 +1,8 @@
 import { prisma } from '../lib/prisma.js';
-import type { CreateTaskInput, UpdateTaskInput } from '../types/task.js';
+import { GetTasksQuery } from '../schemas/taskSchema.js';
+import type { CreateTaskInput } from '../types/task.js';
 
 export const taskRepository = {
-  findMany(userId?: string) {
-    return prisma.task.findMany({
-      where: userId ? { userId } : undefined,
-      orderBy: { createdAt: 'desc' },
-    });
-  },
-
   create(input: CreateTaskInput) {
     return prisma.task.create({
       data: {
@@ -22,14 +16,17 @@ export const taskRepository = {
     });
   },
 
-  findById(id: string) {
-    return prisma.task.findUnique({ where: { id } });
-  },
-
-  update(id: string, input: UpdateTaskInput) {
-    return prisma.task.update({
-      where: { id },
-      data: input,
+  findMany(query: GetTasksQuery) {
+    return prisma.task.findMany({
+      where: {
+        userId: query.userId,
+        status: query.status,
+        priority: query.priority,
+        goalId: query.goalId,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
   },
 };

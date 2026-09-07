@@ -1,17 +1,14 @@
 import { Router } from 'express';
-import {
-  createTask,
-  listTasks,
-  updateTask,
-} from '../controllers/taskController.js';
+import { createTask, getTasks } from '../controllers/taskController.js';
 import { validateBody, validateQuery } from '../middleware/validate.js';
-import { createTaskSchema, updateTaskSchema } from '../schemas/taskSchema.js';
-import { taskQuerySchema } from '../schemas/taskQuerySchema.js';
+import {
+  createTaskSchema,
+  getTasksQuerySchema,
+} from '../schemas/taskSchema.js';
 
 const router = Router();
 
-router.get('/', validateQuery(taskQuerySchema), listTasks);
+router.get('/', validateQuery(getTasksQuerySchema), getTasks);
 router.post('/', validateBody(createTaskSchema), createTask);
-router.patch('/:id', validateBody(updateTaskSchema), updateTask);
 
 export default router;

@@ -1,10 +1,10 @@
 import type { RequestHandler } from 'express';
 import { taskService } from '../services/taskService.js';
-import type {
-  CreateTaskRequest,
-  UpdateTaskRequest,
+import {
+  getTasksQuerySchema,
+  type CreateTaskRequest,
+  type GetTasksQuery,
 } from '../schemas/taskSchema.js';
-import type { TaskQuery } from '../schemas/taskQuerySchema.js';
 
 type CreateTaskRequestHandler = RequestHandler<
   Record<string, never>,
@@ -12,31 +12,11 @@ type CreateTaskRequestHandler = RequestHandler<
   CreateTaskRequest
 >;
 
-type ListTasksRequestHandler = RequestHandler<
+type GetTasksRequestHandler = RequestHandler<
   Record<string, never>,
   unknown,
-  unknown,
-  TaskQuery
+  GetTasksQuery
 >;
-
-type UpdateTaskRequestHandler = RequestHandler<
-  { id: string },
-  unknown,
-  UpdateTaskRequest
->;
-
-export const listTasks: ListTasksRequestHandler = async (req, res, next) => {
-  try {
-    const tasks = await taskService.listTasks(req.query.userId);
-
-    res.status(200).json({
-      success: true,
-      data: tasks,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
 
 export const createTask: CreateTaskRequestHandler = async (req, res, next) => {
   try {
@@ -51,13 +31,15 @@ export const createTask: CreateTaskRequestHandler = async (req, res, next) => {
   }
 };
 
-export const updateTask: UpdateTaskRequestHandler = async (req, res, next) => {
+export const getTasks: GetTasksRequestHandler = async (req, res, next) => {
   try {
-    const task = await taskService.updateTask(req.params.id, req.body);
+    const query = getTasksQuerySchema.parse(req.query);
+
+    const tasks = await taskService.getTasks(query);
 
     res.status(200).json({
       success: true,
-      data: task,
+      data: tasks,
     });
   } catch (error) {
     next(error);
