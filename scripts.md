@@ -1,0 +1,1 @@
+curl -sS -i -X POST http://localhost:3001/api/v1/tasks -H 'Content-Type: application/json' -d '{"userId":"1d499f4e-2f86-4e93-9a6c-44255d349dc2","title":"Build LifeOS API","description":"Implement the first task endpoint","priority":"HIGH"}'

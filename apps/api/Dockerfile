@@ -6,7 +6,7 @@ COPY package*.json ./
 
 FROM base AS dependencies
 
-RUN npm ci --fetch-retries=5 --fetch-retry-factor=2 --fetch-retry-mintimeout=1000 --fetch-retry-maxtimeout=120000
+RUN npm install
 
 FROM dependencies AS build
 
