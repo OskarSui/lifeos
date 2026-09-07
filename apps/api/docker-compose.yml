@@ -9,11 +9,11 @@ services:
       POSTGRES_PASSWORD: lifeos
       POSTGRES_DB: lifeos
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U lifeos"]
+      test: ['CMD-SHELL', 'pg_isready -U lifeos']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -27,7 +27,7 @@ services:
       DATABASE_URL: postgresql://lifeos:lifeos@postgres:5432/lifeos?schema=public
       NODE_ENV: development
     ports:
-      - "3001:3000"
+      - '3001:3000'
     depends_on:
       postgres:
         condition: service_healthy

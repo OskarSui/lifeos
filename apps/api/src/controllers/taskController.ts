@@ -2,11 +2,15 @@ import type { RequestHandler } from 'express';
 import { taskService } from '../services/taskService.js';
 import type { CreateTaskRequest } from '../schemas/taskSchema.js';
 
-export const createTask: RequestHandler = async (req, res, next) => {
-  try {
-    const body = req.body as CreateTaskRequest;
+type CreateTaskRequestHandler = RequestHandler<
+  Record<string, never>,
+  unknown,
+  CreateTaskRequest
+>;
 
-    const task = await taskService.createTask(body);
+export const createTask: CreateTaskRequestHandler = async (req, res, next) => {
+  try {
+    const task = await taskService.createTask(req.body);
 
     res.status(201).json({
       success: true,
