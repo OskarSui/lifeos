@@ -411,3 +411,296 @@ describe('GET /api/v1/tasks/:id', () => {
     expect(mockedPrisma.task.findFirst).not.toHaveBeenCalled();
   });
 });
+
+describe('PATCH /api/v1/tasks/:id', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('updates a task title', async () => {
+    const updatedTask = {
+      ...task,
+      title: 'Updated LifeOS task',
+    };
+
+    mockedPrisma.$transaction.mockImplementation(async (callback) => {
+      const tx = {
+        task: {
+          findFirst: vi.fn().mockResolvedValue(task),
+          update: vi.fn().mockResolvedValue(updatedTask),
+        },
+      };
+
+      return callback(tx as never);
+    });
+
+    const response = await request(app)
+      .patch(`/api/v1/tasks/${task.id}`)
+      .query({
+        userId,
+      })
+      .send({
+        title: '  Updated LifeOS task  ',
+      })
+      .expect(200);
+
+    expect(response.body).toEqual({
+      success: true,
+      data: {
+        id: updatedTask.id,
+        userId: updatedTask.userId,
+        goalId: updatedTask.goalId,
+        title: updatedTask.title,
+        description: updatedTask.description,
+        status: updatedTask.status,
+        priority: updatedTask.priority,
+        dueDate: null,
+        createdAt: updatedTask.createdAt.toISOString(),
+        updatedAt: updatedTask.updatedAt.toISOString(),
+      },
+    });
+  });
+
+  it('updates task status', async () => {
+    const updatedTask = {
+      ...task,
+      status: 'IN_PROGRESS' as const,
+    };
+
+    mockedPrisma.$transaction.mockImplementation(async (callback) => {
+      const tx = {
+        task: {
+          findFirst: vi.fn().mockResolvedValue(task),
+          update: vi.fn().mockResolvedValue(updatedTask),
+        },
+      };
+
+      return callback(tx as never);
+    });
+
+    await request(app)
+      .patch(`/api/v1/tasks/${task.id}`)
+      .query({
+        userId,
+      })
+      .send({
+        status: 'IN_PROGRESS',
+      })
+      .expect(200);
+
+    expect(mockedPrisma.$transaction).toHaveBeenCalledOnce();
+  });
+
+  it('updates multiple task fields', async () => {
+    const updatedTask = {
+      ...task,
+      title: 'Finish LifeOS MVP',
+      status: 'IN_PROGRESS' as const,
+      priority: 'LOW' as const,
+      description: 'Updated description',
+    };
+
+    mockedPrisma.$transaction.mockImplementation(async (callback) => {
+      const tx = {
+        task: {
+          findFirst: vi.fn().mockResolvedValue(task),
+          update: vi.fn().mockResolvedValue(updatedTask),
+        },
+      };
+
+      return callback(tx as never);
+    });
+
+    const response = await request(app)
+      .patch(`/api/v1/tasks/${task.id}`)
+      .query({
+        userId,
+      })
+      .send({
+        title: 'Finish LifeOS MVP',
+        status: 'IN_PROGRESS',
+        priority: 'LOW',
+        description: 'Updated description',
+      })
+      .expect(200);
+
+    expect(response.body.success).toBe(true);
+    expect(response.body.data.title).toBe('Finish LifeOS MVP');
+    expect(response.body.data.status).toBe('IN_PROGRESS');
+    expect(response.body.data.priority).toBe('LOW');
+  });
+
+  it('allows clearing goalId with null', async () => {
+    const taskWithGoal = {
+      ...task,
+      goalId: '770e8400-e29b-41d4-a716-446655440000',
+    };
+
+    const updatedTask = {
+      ...taskWithGoal,
+      goalId: null,
+    };
+
+    mockedPrisma.$transaction.mockImplementation(async (callback) => {
+      const tx = {
+        task: {
+          findFirst: vi.fn().mockResolvedValue(taskWithGoal),
+          update: vi.fn().mockResolvedValue(updatedTask),
+        },
+      };
+
+      return callback(tx as never);
+    });
+
+    const response = await request(app)
+      .patch(`/api/v1/tasks/${task.id}`)
+      .query({
+        userId,
+      })
+      .send({
+        goalId: null,
+      })
+      .expect(200);
+
+    expect(response.body.success).toBe(true);
+    expect(response.body.data.goalId).toBeNull();
+  });
+
+  it('allows clearing dueDate with null', async () => {
+    const dueDate = new Date('2026-09-10T10:00:00.000Z');
+
+    const taskWithDueDate = {
+      ...task,
+      dueDate,
+    };
+
+    const updatedTask = {
+      ...taskWithDueDate,
+      dueDate: null,
+    };
+
+    mockedPrisma.$transaction.mockImplementation(async (callback) => {
+      const tx = {
+        task: {
+          findFirst: vi.fn().mockResolvedValue(taskWithDueDate),
+          update: vi.fn().mockResolvedValue(updatedTask),
+        },
+      };
+
+      return callback(tx as never);
+    });
+
+    const response = await request(app)
+      .patch(`/api/v1/tasks/${task.id}`)
+      .query({
+        userId,
+      })
+      .send({
+        dueDate: null,
+      })
+      .expect(200);
+
+    expect(response.body.success).toBe(true);
+    expect(response.body.data.dueDate).toBeNull();
+  });
+
+  it('returns 400 for an invalid status', async () => {
+    const response = await request(app)
+      .patch(`/api/v1/tasks/${task.id}`)
+      .query({
+        userId,
+      })
+      .send({
+        status: 'INVALID_STATUS',
+      })
+      .expect(400);
+
+    expect(response.body).toEqual({
+      success: false,
+      error: {
+        code: 'VALIDATION_ERROR',
+        message:
+          'status: Invalid option: expected one of "INBOX"|"IN_PROGRESS"|"DONE"',
+      },
+    });
+
+    expect(mockedPrisma.$transaction).not.toHaveBeenCalled();
+  });
+
+  it('returns 400 for an empty update', async () => {
+    const response = await request(app)
+      .patch(`/api/v1/tasks/${task.id}`)
+      .query({
+        userId,
+      })
+      .send({})
+      .expect(400);
+
+    expect(response.body.success).toBe(false);
+    expect(response.body.error.code).toBe('VALIDATION_ERROR');
+
+    expect(mockedPrisma.$transaction).not.toHaveBeenCalled();
+  });
+
+  it('returns 400 for an invalid task id', async () => {
+    const response = await request(app)
+      .patch('/api/v1/tasks/not-a-uuid')
+      .query({
+        userId,
+      })
+      .send({
+        title: 'Updated task',
+      })
+      .expect(400);
+
+    expect(response.body.success).toBe(false);
+    expect(response.body.error.code).toBe('VALIDATION_ERROR');
+
+    expect(mockedPrisma.$transaction).not.toHaveBeenCalled();
+  });
+
+  it('returns 400 when userId is missing', async () => {
+    const response = await request(app)
+      .patch(`/api/v1/tasks/${task.id}`)
+      .send({
+        title: 'Updated task',
+      })
+      .expect(400);
+
+    expect(response.body.success).toBe(false);
+    expect(response.body.error.code).toBe('VALIDATION_ERROR');
+
+    expect(mockedPrisma.$transaction).not.toHaveBeenCalled();
+  });
+
+  it('returns 404 when task does not belong to the user', async () => {
+    mockedPrisma.$transaction.mockImplementation(async (callback) => {
+      const tx = {
+        task: {
+          findFirst: vi.fn().mockResolvedValue(null),
+          update: vi.fn(),
+        },
+      };
+
+      return callback(tx as never);
+    });
+
+    const response = await request(app)
+      .patch(`/api/v1/tasks/${task.id}`)
+      .query({
+        userId,
+      })
+      .send({
+        title: 'Updated task',
+      })
+      .expect(404);
+
+    expect(response.body).toEqual({
+      success: false,
+      error: {
+        code: 'TASK_NOT_FOUND',
+        message: 'Task not found',
+      },
+    });
+  });
+});
