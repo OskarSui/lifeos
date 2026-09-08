@@ -1,10 +1,19 @@
 import express from 'express';
+import cors from 'cors';
+
 import { prisma } from './lib/prisma.js';
+import { env } from './config/env.js';
 import { notFoundHandler } from './middleware/notFound.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import taskRoutes from './routes/taskRoutes.js';
 
 export const app = express();
+
+app.use(
+  cors({
+    origin: env.corsOrigin,
+  }),
+);
 
 app.use(express.json());
 
