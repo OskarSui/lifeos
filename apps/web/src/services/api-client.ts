@@ -41,6 +41,10 @@ export async function apiRequest<T>(path: string, options?: RequestInit): Promis
     },
   });
 
+  if (response.status === 204) {
+    return undefined as T;
+  }
+
   const result = (await response.json()) as ApiResponse<T>;
 
   if (!response.ok || !result.success) {

@@ -13,3 +13,28 @@ export interface Task {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface CreateTaskInput {
+  userId: string;
+  title: string;
+  description?: string;
+  priority?: TaskPriority;
+  goalId?: string;
+  dueDate?: string;
+}
+
+export interface UpdateTaskInput {
+  title?: string;
+  description?: string;
+  status?: TaskStatus;
+  priority?: TaskPriority;
+  goalId?: string | null;
+  dueDate?: string | null;
+}
+
+export interface GetTasksParams {
+  userId: string;
+  status?: TaskStatus;
+  priority?: TaskPriority;
+  goalId?: string;
+}
