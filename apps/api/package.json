@@ -11,7 +11,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "seed": "tsx prisma/seed.ts",
-    "test": "vitest run",
+    "test": "vitest run --exclude src/**/*.integration.test.ts",
+    "test:integration": "vitest run src/app.integration.test.ts",
     "test:watch": "vitest"
   },
   "devDependencies": {

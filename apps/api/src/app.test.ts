@@ -647,3 +647,77 @@ describe('PATCH /api/v1/tasks/:id', () => {
     });
   });
 });
+
+describe('DELETE /api/v1/tasks/:id', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('deletes a task and returns 204', async () => {
+    mockedPrisma.task.deleteMany.mockResolvedValue({
+      count: 1,
+    });
+
+    const response = await request(app)
+      .delete(`/api/v1/tasks/${task.id}`)
+      .query({
+        userId,
+      })
+      .expect(204);
+
+    expect(response.body).toEqual({});
+
+    expect(mockedPrisma.task.deleteMany).toHaveBeenCalledWith({
+      where: {
+        id: task.id,
+        userId,
+      },
+    });
+  });
+
+  it('returns 404 when task does not exist', async () => {
+    mockedPrisma.task.deleteMany.mockResolvedValue({
+      count: 0,
+    });
+
+    const response = await request(app)
+      .delete(`/api/v1/tasks/${task.id}`)
+      .query({
+        userId,
+      })
+      .expect(404);
+
+    expect(response.body).toEqual({
+      success: false,
+      error: {
+        code: 'TASK_NOT_FOUND',
+        message: 'Task not found',
+      },
+    });
+  });
+
+  it('returns 400 for an invalid task id', async () => {
+    const response = await request(app)
+      .delete('/api/v1/tasks/not-a-uuid')
+      .query({
+        userId,
+      })
+      .expect(400);
+
+    expect(response.body.success).toBe(false);
+    expect(response.body.error.code).toBe('VALIDATION_ERROR');
+
+    expect(mockedPrisma.task.deleteMany).not.toHaveBeenCalled();
+  });
+
+  it('returns 400 when userId is missing', async () => {
+    const response = await request(app)
+      .delete(`/api/v1/tasks/${task.id}`)
+      .expect(400);
+
+    expect(response.body.success).toBe(false);
+    expect(response.body.error.code).toBe('VALIDATION_ERROR');
+
+    expect(mockedPrisma.task.deleteMany).not.toHaveBeenCalled();
+  });
+});
