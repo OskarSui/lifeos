@@ -29,11 +29,45 @@ POST /api/v1/tasks
 
 lifeos/
 ├── apps/
-│   ├── web/
-│   └── api/
+│ ├── web/
+│ └── api/
 ├── packages/
-│   └── shared/
+│ └── shared/
 ├── docs/
 ├── docker/
 ├── docker-compose.yml
 └── README.md
+
+# Frontend
+
+ ## TasksPage
+
+Отвечает за:
+
+loading
+error
+state
+CRUD handlers
+TaskList
+
+Отвечает за:
+
+отображение списка
+TaskCard
+
+Отвечает за:
+
+отображение одной задачи
+пользовательские действия
+task.api.ts
+
+Отвечает за:
+
+HTTP API
+api-client.ts
+
+Отвечает за:
+
+transport
+HTTP errors
+API envelope
