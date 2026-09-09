@@ -83,8 +83,9 @@ export async function updateGoal(
   try {
     const id = req.params.id as string;
 
-    const { userId, ...input } = req.body as {
-      userId: string;
+    const userId = req.query.userId as string;
+
+    const input = req.body as {
       title?: string;
       description?: string | null;
       status?: 'ACTIVE' | 'COMPLETED' | 'ARCHIVED';

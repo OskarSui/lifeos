@@ -17,10 +17,16 @@ import type { Task, TaskStatus } from "../features/tasks/task.types";
 import TodayProgress from "../features/dashboard/components/TodayProgress";
 import type { DashboardCounts, DashboardProgress } from "../features/dashboard/dashboard.types";
 
+import { createGoal, getGoals } from "../features/goals/goal.api";
+import GoalForm from "../features/goals/components/GoalForm";
+import GoalList from "../features/goals/components/GoalList";
+import type { Goal } from "../features/goals/goal.types";
+
 import { DEMO_USER_ID } from "../lib/demo-user";
 
 function TasksPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [goals, setGoals] = useState<Goal[]>([]);
 
   const [counts, setCounts] = useState<DashboardCounts>({
     total: 0,
@@ -35,23 +41,26 @@ function TasksPage() {
     percentage: 0,
   });
   const [focus, setFocus] = useState<TodayFocus | null>(null);
-
   const [loading, setLoading] = useState(true);
-
   const [error, setError] = useState<string | null>(null);
-
   const [editingTask, setEditingTask] = useState<Task | null>(null);
 
   const loadDashboard = useCallback(async () => {
     try {
+      setLoading(true);
       setError(null);
 
-      const dashboard = await getTodayDashboard(DEMO_USER_ID);
+      const [dashboard, goals] = await Promise.all([
+        getTodayDashboard(DEMO_USER_ID),
+        getGoals(DEMO_USER_ID),
+      ]);
 
       setTasks(dashboard.tasks);
       setFocus(dashboard.focus);
       setCounts(dashboard.counts);
       setProgress(dashboard.progress);
+
+      setGoals(goals);
     } catch (error) {
       setError(error instanceof Error ? error.message : "Failed to load dashboard");
     } finally {
@@ -93,6 +102,24 @@ function TasksPage() {
     }
   }
 
+  async function handleCreateGoal(title: string, description: string) {
+    try {
+      setError(null);
+
+      await createGoal({
+        userId: DEMO_USER_ID,
+        title,
+        description: description || undefined,
+      });
+
+      await loadDashboard();
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "Failed to create goal");
+
+      throw error;
+    }
+  }
+
   async function handleStatusChange(task: Task, status: TaskStatus) {
     try {
       setError(null);
@@ -128,6 +155,7 @@ function TasksPage() {
       description: string | null;
       priority: Task["priority"];
       dueDate: string | null;
+      goalId: string | null;
     },
   ) {
     try {
@@ -177,6 +205,11 @@ function TasksPage() {
         disabled={loading}
       />
 
+      <div className="grid gap-4 lg:grid-cols-2">
+        <GoalForm onCreate={handleCreateGoal} disabled={loading} />
+        <GoalList goals={goals} />
+      </div>
+
       <TodayProgress counts={counts} progress={progress} />
 
       <QuickCapture onCreate={handleCreateTask} disabled={loading} />
@@ -209,6 +242,7 @@ function TasksPage() {
       {editingTask && (
         <TaskEditor
           task={editingTask}
+          goals={goals}
           onSave={handleSaveTask}
           onClose={() => setEditingTask(null)}
         />

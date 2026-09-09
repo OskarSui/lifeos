@@ -1,9 +1,11 @@
 import { useState } from "react";
 
 import type { Task, TaskPriority } from "../task.types";
+import type { Goal } from "../../goals/goal.types";
 
 interface TaskEditorProps {
   task: Task;
+  goals: Goal[];
   onSave: (
     task: Task,
     input: {
@@ -11,17 +13,19 @@ interface TaskEditorProps {
       description: string | null;
       priority: TaskPriority;
       dueDate: string | null;
+      goalId: string | null;
     },
   ) => Promise<void>;
   onClose: () => void;
 }
 
-function TaskEditor({ task, onSave, onClose }: TaskEditorProps) {
+function TaskEditor({ task, goals, onSave, onClose }: TaskEditorProps) {
   const [title, setTitle] = useState(task.title);
   const [description, setDescription] = useState(task.description ?? "");
   const [priority, setPriority] = useState<TaskPriority>(task.priority);
   const [dueDate, setDueDate] = useState(task.dueDate ? task.dueDate.slice(0, 10) : "");
 
+  const [goalId, setGoalId] = useState(task.goalId ?? "");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -44,6 +48,7 @@ function TaskEditor({ task, onSave, onClose }: TaskEditorProps) {
         description: description.trim() || null,
         priority,
         dueDate: dueDate ? `${dueDate}T00:00:00.000Z` : null,
+        goalId: goalId || null,
       });
 
       onClose();
@@ -117,6 +122,30 @@ function TaskEditor({ task, onSave, onClose }: TaskEditorProps) {
               className="w-full resize-y rounded-lg border px-3 py-2 text-sm outline-none focus:border-gray-400 focus:ring-2 focus:ring-gray-100"
               placeholder="Add more details..."
             />
+          </div>
+
+          <div>
+            <label htmlFor="task-goal" className="mb-1 block text-sm font-medium text-gray-700">
+              Goal
+            </label>
+
+            <select
+              id="task-goal"
+              value={goalId}
+              onChange={(event) => setGoalId(event.target.value)}
+              disabled={saving}
+              className="w-full rounded-lg border bg-white px-3 py-2 text-sm"
+            >
+              <option value="">No goal</option>
+
+              {goals
+                .filter((goal) => goal.status === "ACTIVE")
+                .map((goal) => (
+                  <option key={goal.id} value={goal.id}>
+                    {goal.title}
+                  </option>
+                ))}
+            </select>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">

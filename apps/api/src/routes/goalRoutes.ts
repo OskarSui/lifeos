@@ -38,8 +38,9 @@ router.get(
 
 router.patch(
   '/:id',
-  validateBody(updateGoalSchema),
+  validateQuery(getGoalsQuerySchema.pick({ userId: true })),
   validateParams(goalIdSchema),
+  validateBody(updateGoalSchema),
   updateGoal,
 );
 
