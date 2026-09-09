@@ -1,37 +1,49 @@
 import { useEffect, useState } from "react";
 
-import { createTask, deleteTask, getTasks, updateTask } from "../features/tasks/task.api";
+import { createTask, deleteTask, updateTask } from "../features/tasks/task.api";
+
 import KanbanBoard from "../features/tasks/components/KanbanBoard";
 import QuickCapture from "../features/tasks/components/QuickCapture";
 import TaskEditor from "../features/tasks/components/TaskEditor";
+
+import TodayFocusComponent from "../features/focus/components/TodayFocus";
+import type { TodayFocus } from "../features/focus/focus.types";
+import { setTodayFocus } from "../features/focus/focus.api";
+
+import { getTodayDashboard } from "../features/dashboard/dashboard.api";
+
 import type { Task, TaskStatus } from "../features/tasks/task.types";
+
 import { DEMO_USER_ID } from "../lib/demo-user";
 
 function TasksPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [focus, setFocus] = useState<TodayFocus | null>(null);
+
   const [loading, setLoading] = useState(true);
-  const [editingTask, setEditingTask] = useState<Task | null>(null);
+
   const [error, setError] = useState<string | null>(null);
 
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
+
   useEffect(() => {
-    async function loadTasks() {
+    async function loadDashboard() {
       try {
         setLoading(true);
         setError(null);
 
-        const data = await getTasks({
-          userId: DEMO_USER_ID,
-        });
+        const dashboard = await getTodayDashboard(DEMO_USER_ID);
 
-        setTasks(data);
+        setTasks(dashboard.tasks);
+        setFocus(dashboard.focus);
       } catch (error) {
-        setError(error instanceof Error ? error.message : "Failed to load tasks");
+        setError(error instanceof Error ? error.message : "Failed to load dashboard");
       } finally {
         setLoading(false);
       }
     }
 
-    void loadTasks();
+    void loadDashboard();
   }, []);
 
   async function handleCreateTask(title: string) {
@@ -47,7 +59,44 @@ function TasksPage() {
       setTasks((currentTasks) => [task, ...currentTasks]);
     } catch (error) {
       setError(error instanceof Error ? error.message : "Failed to create task");
+
       throw error;
+    }
+  }
+
+  async function handleStatusChange(task: Task, status: TaskStatus) {
+    try {
+      setError(null);
+
+      const updatedTask = await updateTask(task.id, DEMO_USER_ID, { status });
+
+      setTasks((currentTasks) =>
+        currentTasks.map((currentTask) =>
+          currentTask.id === updatedTask.id ? updatedTask : currentTask,
+        ),
+      );
+
+      if (focus?.taskId === task.id && status === "DONE") {
+        setFocus(null);
+      }
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "Failed to update task");
+    }
+  }
+
+  async function handleDeleteTask(task: Task) {
+    try {
+      setError(null);
+
+      await deleteTask(task.id, DEMO_USER_ID);
+
+      setTasks((currentTasks) => currentTasks.filter((currentTask) => currentTask.id !== task.id));
+
+      if (focus?.taskId === task.id) {
+        setFocus(null);
+      }
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "Failed to delete task");
     }
   }
 
@@ -75,43 +124,40 @@ function TasksPage() {
     );
   }
 
-  async function handleStatusChange(task: Task, status: TaskStatus) {
+  async function handleSelectFocus(taskId: string) {
     try {
       setError(null);
 
-      const updatedTask = await updateTask(task.id, DEMO_USER_ID, { status });
+      const newFocus = await setTodayFocus({
+        userId: DEMO_USER_ID,
+        taskId,
+      });
 
-      setTasks((currentTasks) =>
-        currentTasks.map((currentTask) =>
-          currentTask.id === updatedTask.id ? updatedTask : currentTask,
-        ),
-      );
+      setFocus(newFocus);
     } catch (error) {
-      setError(error instanceof Error ? error.message : "Failed to update task");
-    }
-  }
-
-  async function handleDeleteTask(task: Task) {
-    try {
-      setError(null);
-
-      await deleteTask(task.id, DEMO_USER_ID);
-
-      setTasks((currentTasks) => currentTasks.filter((currentTask) => currentTask.id !== task.id));
-    } catch (error) {
-      setError(error instanceof Error ? error.message : "Failed to delete task");
+      setError(error instanceof Error ? error.message : "Failed to set today's focus");
     }
   }
 
   return (
     <section className="space-y-6">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-semibold tracking-tight">Tasks</h2>
+      <div>
+        <p className="text-sm font-medium text-gray-400">Today</p>
 
-          <p className="mt-1 text-sm text-gray-500">Capture, organize and execute.</p>
-        </div>
+        <h1 className="mt-1 text-2xl font-semibold tracking-tight text-gray-900">
+          What matters now?
+        </h1>
+
+        <p className="mt-1 text-sm text-gray-500">Capture, focus and execute.</p>
       </div>
+
+      <TodayFocusComponent
+        focus={focus}
+        tasks={tasks}
+        onSelect={handleSelectFocus}
+        disabled={loading}
+      />
+
       <QuickCapture onCreate={handleCreateTask} disabled={loading} />
 
       {error && (
@@ -120,9 +166,15 @@ function TasksPage() {
         </div>
       )}
 
-      <div className="rounded-xl border bg-white p-6 shadow-sm">
+      <div>
+        <div className="mb-3">
+          <h2 className="text-lg font-semibold text-gray-900">Tasks</h2>
+
+          <p className="text-sm text-gray-500">Move work forward.</p>
+        </div>
+
         {loading ? (
-          <p className="text-sm text-gray-500">Loading tasks...</p>
+          <p className="text-sm text-gray-500">Loading today...</p>
         ) : (
           <KanbanBoard
             tasks={tasks}
@@ -131,16 +183,15 @@ function TasksPage() {
             onEdit={handleEditTask}
           />
         )}
-
-        {editingTask && (
-          <TaskEditor
-            key={editingTask.id}
-            task={editingTask}
-            onSave={handleSaveTask}
-            onClose={() => setEditingTask(null)}
-          />
-        )}
       </div>
+
+      {editingTask && (
+        <TaskEditor
+          task={editingTask}
+          onSave={handleSaveTask}
+          onClose={() => setEditingTask(null)}
+        />
+      )}
     </section>
   );
 }

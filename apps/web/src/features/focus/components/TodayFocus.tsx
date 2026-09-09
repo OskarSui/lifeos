@@ -8,7 +8,7 @@ interface TodayFocusProps {
   disabled?: boolean;
 }
 
-function TodayFocus({ focus, tasks, onSelect, disabled = false }: TodayFocusProps) {
+function TodayFocusComponent({ focus, tasks, onSelect, disabled = false }: TodayFocusProps) {
   const availableTasks = tasks.filter((task) => task.status !== "DONE");
 
   return (
@@ -80,4 +80,4 @@ function TodayFocus({ focus, tasks, onSelect, disabled = false }: TodayFocusProp
   );
 }
 
-export default TodayFocus;
+export default TodayFocusComponent;
