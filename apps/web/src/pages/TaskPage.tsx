@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { createTask, deleteTask, updateTask } from "../features/tasks/task.api";
 
@@ -14,10 +14,26 @@ import { getTodayDashboard } from "../features/dashboard/dashboard.api";
 
 import type { Task, TaskStatus } from "../features/tasks/task.types";
 
+import TodayProgress from "../features/dashboard/components/TodayProgress";
+import type { DashboardCounts, DashboardProgress } from "../features/dashboard/dashboard.types";
+
 import { DEMO_USER_ID } from "../lib/demo-user";
 
 function TasksPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
+
+  const [counts, setCounts] = useState<DashboardCounts>({
+    total: 0,
+    inbox: 0,
+    inProgress: 0,
+    done: 0,
+  });
+
+  const [progress, setProgress] = useState<DashboardProgress>({
+    completed: 0,
+    total: 0,
+    percentage: 0,
+  });
   const [focus, setFocus] = useState<TodayFocus | null>(null);
 
   const [loading, setLoading] = useState(true);
@@ -26,37 +42,50 @@ function TasksPage() {
 
   const [editingTask, setEditingTask] = useState<Task | null>(null);
 
+  const loadDashboard = useCallback(async () => {
+    try {
+      setError(null);
+
+      const dashboard = await getTodayDashboard(DEMO_USER_ID);
+
+      setTasks(dashboard.tasks);
+      setFocus(dashboard.focus);
+      setCounts(dashboard.counts);
+      setProgress(dashboard.progress);
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "Failed to load dashboard");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
-    async function loadDashboard() {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const dashboard = await getTodayDashboard(DEMO_USER_ID);
-
+    getTodayDashboard(DEMO_USER_ID)
+      .then((dashboard) => {
         setTasks(dashboard.tasks);
         setFocus(dashboard.focus);
-      } catch (error) {
+        setCounts(dashboard.counts);
+        setProgress(dashboard.progress);
+      })
+      .catch((error: unknown) => {
         setError(error instanceof Error ? error.message : "Failed to load dashboard");
-      } finally {
+      })
+      .finally(() => {
         setLoading(false);
-      }
-    }
-
-    void loadDashboard();
+      });
   }, []);
 
   async function handleCreateTask(title: string) {
     try {
       setError(null);
 
-      const task = await createTask({
+      await createTask({
         userId: DEMO_USER_ID,
         title,
         priority: "MEDIUM",
       });
 
-      setTasks((currentTasks) => [task, ...currentTasks]);
+      await loadDashboard();
     } catch (error) {
       setError(error instanceof Error ? error.message : "Failed to create task");
 
@@ -68,17 +97,9 @@ function TasksPage() {
     try {
       setError(null);
 
-      const updatedTask = await updateTask(task.id, DEMO_USER_ID, { status });
+      await updateTask(task.id, DEMO_USER_ID, { status });
 
-      setTasks((currentTasks) =>
-        currentTasks.map((currentTask) =>
-          currentTask.id === updatedTask.id ? updatedTask : currentTask,
-        ),
-      );
-
-      if (focus?.taskId === task.id && status === "DONE") {
-        setFocus(null);
-      }
+      await loadDashboard();
     } catch (error) {
       setError(error instanceof Error ? error.message : "Failed to update task");
     }
@@ -90,11 +111,7 @@ function TasksPage() {
 
       await deleteTask(task.id, DEMO_USER_ID);
 
-      setTasks((currentTasks) => currentTasks.filter((currentTask) => currentTask.id !== task.id));
-
-      if (focus?.taskId === task.id) {
-        setFocus(null);
-      }
+      await loadDashboard();
     } catch (error) {
       setError(error instanceof Error ? error.message : "Failed to delete task");
     }
@@ -113,27 +130,29 @@ function TasksPage() {
       dueDate: string | null;
     },
   ) {
-    setError(null);
+    try {
+      setError(null);
 
-    const updatedTask = await updateTask(task.id, DEMO_USER_ID, input);
+      await updateTask(task.id, DEMO_USER_ID, input);
 
-    setTasks((currentTasks) =>
-      currentTasks.map((currentTask) =>
-        currentTask.id === updatedTask.id ? updatedTask : currentTask,
-      ),
-    );
+      await loadDashboard();
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "Failed to update task");
+
+      throw error;
+    }
   }
 
   async function handleSelectFocus(taskId: string) {
     try {
       setError(null);
 
-      const newFocus = await setTodayFocus({
+      await setTodayFocus({
         userId: DEMO_USER_ID,
         taskId,
       });
 
-      setFocus(newFocus);
+      await loadDashboard();
     } catch (error) {
       setError(error instanceof Error ? error.message : "Failed to set today's focus");
     }
@@ -157,6 +176,8 @@ function TasksPage() {
         onSelect={handleSelectFocus}
         disabled={loading}
       />
+
+      <TodayProgress counts={counts} progress={progress} />
 
       <QuickCapture onCreate={handleCreateTask} disabled={loading} />
 
