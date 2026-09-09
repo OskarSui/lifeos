@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import { createTask, deleteTask, getTasks, updateTask } from "../features/tasks/task.api";
 import KanbanBoard from "../features/tasks/components/KanbanBoard";
+import QuickCapture from "../features/tasks/components/QuickCapture";
 import type { Task, TaskStatus } from "../features/tasks/task.types";
 import { DEMO_USER_ID } from "../lib/demo-user";
 
@@ -31,19 +32,20 @@ function TasksPage() {
     void loadTasks();
   }, []);
 
-  async function handleCreateTask() {
+  async function handleCreateTask(title: string) {
     try {
       setError(null);
 
       const task = await createTask({
         userId: DEMO_USER_ID,
-        title: "New LifeOS task",
+        title,
         priority: "MEDIUM",
       });
 
       setTasks((currentTasks) => [task, ...currentTasks]);
     } catch (error) {
       setError(error instanceof Error ? error.message : "Failed to create task");
+      throw error;
     }
   }
 
@@ -77,21 +79,14 @@ function TasksPage() {
 
   return (
     <section className="space-y-6">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-semibold tracking-tight">Tasks</h2>
+      {/* <div className="flex items-start justify-between gap-4"> */}
+      <div>
+        <h2 className="text-2xl font-semibold tracking-tight">Tasks</h2>
 
-          <p className="mt-1 text-sm text-gray-500">Capture, organize and execute.</p>
-        </div>
-
-        <button
-          type="button"
-          onClick={() => void handleCreateTask()}
-          className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800"
-        >
-          Add task
-        </button>
+        <p className="mt-1 text-sm text-gray-500">Capture, organize and execute.</p>
       </div>
+      {/* </div> */}
+      <QuickCapture onCreate={handleCreateTask} disabled={loading} />
 
       {error && (
         <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
