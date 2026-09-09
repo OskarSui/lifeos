@@ -28,6 +28,7 @@ const task: Task = {
   status: 'INBOX',
   priority: 'HIGH',
   dueDate: null,
+  completedAt: null,
   createdAt: new Date(),
   updatedAt: new Date(),
 };
@@ -171,11 +172,11 @@ describe('taskService.updateTask', () => {
 
     await taskService.updateTask(taskId, userId, input);
 
-    expect(mockedTaskRepository.update).toHaveBeenCalledWith(
-      taskId,
-      userId,
-      input,
-    );
+    expect(mockedTaskRepository.update).toHaveBeenCalledWith(taskId, userId, {
+      priority: 'LOW',
+      status: 'IN_PROGRESS',
+      completedAt: null,
+    });
   });
 
   it('throws TASK_NOT_FOUND when task does not exist', async () => {

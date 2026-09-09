@@ -32,6 +32,7 @@ const task = {
   status: 'INBOX' as const,
   priority: 'HIGH' as const,
   dueDate: null,
+  completedAt: null,
   createdAt: new Date(),
   updatedAt: new Date(),
 };

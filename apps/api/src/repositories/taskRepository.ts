@@ -1,6 +1,6 @@
 import { prisma } from '../lib/prisma.js';
 import { GetTasksQuery } from '../schemas/taskSchema.js';
-import type { CreateTaskInput, UpdateTaskInput } from '../types/task.js';
+import type { CreateTaskInput, UpdateTaskData } from '../types/task.js';
 
 export const taskRepository = {
   create(input: CreateTaskInput) {
@@ -39,7 +39,7 @@ export const taskRepository = {
     });
   },
 
-  async update(id: string, userId: string, input: UpdateTaskInput) {
+  async update(id: string, userId: string, input: UpdateTaskData) {
     return prisma.$transaction(async (tx) => {
       const task = await tx.task.findFirst({
         where: {
