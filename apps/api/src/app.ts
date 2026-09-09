@@ -6,6 +6,8 @@ import { env } from './config/env.js';
 import { notFoundHandler } from './middleware/notFound.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import taskRoutes from './routes/taskRoutes.js';
+import dashboardRoutes from './routes/dashboardRoutes.js';
+import focusRoutes from './routes/focusRoutes.js';
 
 export const app = express();
 
@@ -34,6 +36,10 @@ app.get('/health', async (_req, res, next) => {
 });
 
 app.use('/api/v1/tasks', taskRoutes);
+
+app.use('/api/v1/focus', focusRoutes);
+
+app.use('/api/v1/dashboard', dashboardRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
