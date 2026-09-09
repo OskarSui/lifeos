@@ -100,3 +100,12 @@ taskSchema.test.ts
 validate.test.ts
 │
 └── HTTP validation middleware
+
+curl -X POST http://localhost:3001/api/v1/tasks \
+ -H "Content-Type: application/json" \
+ -d '{
+"userId": "112c9068-a834-4f5c-bb90-4c7e6a69fee2",
+"title": "Build LifeOS frontend",
+"description": "Connect React to the real API",
+"priority": "HIGH"
+}'
