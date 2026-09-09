@@ -40,7 +40,7 @@ lifeos/
 
 # Frontend
 
- ## TasksPage
+## TasksPage
 
 Отвечает за:
 
@@ -71,3 +71,30 @@ api-client.ts
 transport
 HTTP errors
 API envelope
+
+# Main Dashboard
+
+┌─────────────────────────────────────────────┐
+│ Good morning │
+│ Here's what matters today. │
+├─────────────────────────────────────────────┤
+│ │
+│ TODAY'S FOCUS │
+│ ┌─────────────────────────────────────────┐ │
+│ │ Finish LifeOS API architecture HIGH │ │
+│ │ → Continue │ │
+│ └─────────────────────────────────────────┘ │
+│ │
+│ TODAY │
+│ 3 tasks 1 in progress 2 done │
+│ │
+│ Progress │
+│ ████████████░░░░░░ 60% │
+│ │
+├─────────────────────────────────────────────┤
+│ Quick Capture │
+│ [ What needs to be done? ] [Add] │
+├─────────────────────────────────────────────┤
+│ INBOX │ IN PROGRESS │ DONE │
+│ ... │ ... │ ... │
+└─────────────────────────────────────────────┘

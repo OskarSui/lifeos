@@ -19,7 +19,7 @@ export function validateQuery<T>(schema: ZodType<T>): RequestHandler {
       return;
     }
 
-    req.query = result.data as typeof req.query;
+    // req.query = result.data as typeof req.query;
 
     next();
   };
