@@ -3,7 +3,7 @@ import { taskRepository } from '../repositories/taskRepository.js';
 import type {
   CreateTaskInput,
   GetTasksQuery,
-  UpdateTaskInput,
+  UpdateTaskData,
 } from '../types/task.js';
 
 export const taskService = {
@@ -42,12 +42,24 @@ export const taskService = {
     return task;
   },
 
-  async updateTask(id: string, userId: string, input: UpdateTaskInput) {
-    if (input.title !== undefined) {
-      input.title = input.title.trim();
+  async updateTask(id: string, userId: string, input: UpdateTaskData) {
+    const updateData = {
+      ...input,
+    };
+
+    if (updateData.title !== undefined) {
+      updateData.title = updateData.title.trim();
     }
 
-    const task = await taskRepository.update(id, userId, input);
+    if (updateData.status === 'DONE') {
+      updateData.completedAt = new Date();
+    }
+
+    if (updateData.status !== undefined && updateData.status !== 'DONE') {
+      updateData.completedAt = null;
+    }
+
+    const task = await taskRepository.update(id, userId, updateData);
 
     if (!task) {
       throw new AppError('Task not found', 404, 'TASK_NOT_FOUND');

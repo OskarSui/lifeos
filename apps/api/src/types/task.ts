@@ -25,6 +25,10 @@ export interface UpdateTaskInput {
   dueDate?: Date | null;
 }
 
+export interface UpdateTaskData extends UpdateTaskInput {
+  completedAt?: Date | null;
+}
+
 export interface TaskResponse {
   id: string;
   userId: string;
@@ -34,6 +38,7 @@ export interface TaskResponse {
   status: TaskStatus;
   priority: TaskPriority;
   dueDate: Date | null;
+  completedAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
 }

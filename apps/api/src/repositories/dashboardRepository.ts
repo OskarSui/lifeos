@@ -26,6 +26,7 @@ export const dashboardRepository = {
         status: true,
         priority: true,
         dueDate: true,
+        completedAt: true,
       },
       orderBy: [
         {
@@ -95,6 +96,7 @@ export const dashboardRepository = {
             status: true,
             priority: true,
             dueDate: true,
+            completedAt: true,
           },
         },
       },

@@ -7,6 +7,7 @@ export interface DashboardTask {
   status: Task['status'];
   priority: Task['priority'];
   dueDate: Date | null;
+  completedAt: Date | null;
 }
 
 export interface DashboardFocus {

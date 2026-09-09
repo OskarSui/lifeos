@@ -66,6 +66,7 @@ model Task {
   status      TaskStatus   @default(INBOX)
   priority    TaskPriority @default(MEDIUM)
   dueDate     DateTime?
+  completedAt DateTime?
 
   user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   goal        Goal?        @relation(fields: [goalId], references: [id], onDelete: SetNull)
