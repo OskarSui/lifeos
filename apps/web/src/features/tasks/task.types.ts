@@ -1,4 +1,4 @@
-export type TaskStatus = "INDOX" | "IN_PROGRESS" | "DONE";
+export type TaskStatus = "INBOX" | "IN_PROGRESS" | "DONE";
 export type TaskPriority = "LOW" | "MEDIUM" | "HIGH";
 
 export interface Task {

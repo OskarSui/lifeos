@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { createTask, deleteTask, getTasks, updateTask } from "../features/tasks/task.api";
-import TaskList from "../features/tasks/components/TaskList";
+import KanbanBoard from "../features/tasks/components/KanbanBoard";
 import type { Task, TaskStatus } from "../features/tasks/task.types";
 import { DEMO_USER_ID } from "../lib/demo-user";
 
@@ -103,7 +103,11 @@ function TasksPage() {
         {loading ? (
           <p className="text-sm text-gray-500">Loading tasks...</p>
         ) : (
-          <TaskList tasks={tasks} onStatusChange={handleStatusChange} onDelete={handleDeleteTask} />
+          <KanbanBoard
+            tasks={tasks}
+            onStatusChange={handleStatusChange}
+            onDelete={handleDeleteTask}
+          />
         )}
       </div>
     </section>
