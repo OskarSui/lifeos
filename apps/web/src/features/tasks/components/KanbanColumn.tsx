@@ -7,9 +7,10 @@ interface KanbanColumnProps {
   tasks: Task[];
   onStatusChange: (task: Task, status: TaskStatus) => void;
   onDelete: (task: Task) => void;
+  onEdit: (task: Task) => void;
 }
 
-function KanbanColumn({ title, tasks, onStatusChange, onDelete }: KanbanColumnProps) {
+function KanbanColumn({ title, tasks, onStatusChange, onDelete, onEdit }: KanbanColumnProps) {
   return (
     <section className="min-w-0 rounded-xl bg-gray-100 p-3">
       <div className="mb-3 flex items-center justify-between">
@@ -32,6 +33,7 @@ function KanbanColumn({ title, tasks, onStatusChange, onDelete }: KanbanColumnPr
               task={task}
               onStatusChange={onStatusChange}
               onDelete={onDelete}
+              onEdit={onEdit}
             />
           ))
         )}

@@ -4,9 +4,10 @@ interface TaskCardProps {
   task: Task;
   onStatusChange: (task: Task, status: TaskStatus) => void;
   onDelete: (task: Task) => void;
+  onEdit: (task: Task) => void;
 }
 
-function TaskCard({ task, onStatusChange, onDelete }: TaskCardProps) {
+function TaskCard({ task, onStatusChange, onDelete, onEdit }: TaskCardProps) {
   return (
     <article className="rounded-lg border bg-white p-4 shadow-sm">
       <div className="min-w-0">
@@ -35,6 +36,14 @@ function TaskCard({ task, onStatusChange, onDelete }: TaskCardProps) {
 
           <option value="DONE">Done</option>
         </select>
+
+        <button
+          type="button"
+          onClick={() => onEdit(task)}
+          className="min-h-9 rounded-md border px-3 py-1 text-sm text-gray-600 hover:bg-gray-50"
+        >
+          Edit
+        </button>
 
         <button
           type="button"

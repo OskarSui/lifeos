@@ -5,6 +5,7 @@ interface KanbanBoardProps {
   tasks: Task[];
   onStatusChange: (task: Task, status: TaskStatus) => void;
   onDelete: (task: Task) => void;
+  onEdit: (task: Task) => void;
 }
 
 const columns: Array<{
@@ -25,7 +26,7 @@ const columns: Array<{
   },
 ];
 
-function KanbanBoard({ tasks, onStatusChange, onDelete }: KanbanBoardProps) {
+function KanbanBoard({ tasks, onStatusChange, onDelete, onEdit }: KanbanBoardProps) {
   return (
     <div className="grid gap-4 md:grid-cols-3">
       {columns.map((column) => {
@@ -39,6 +40,7 @@ function KanbanBoard({ tasks, onStatusChange, onDelete }: KanbanBoardProps) {
             tasks={columnTasks}
             onStatusChange={onStatusChange}
             onDelete={onDelete}
+            onEdit={onEdit}
           />
         );
       })}

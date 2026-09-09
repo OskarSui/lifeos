@@ -3,12 +3,14 @@ import { useEffect, useState } from "react";
 import { createTask, deleteTask, getTasks, updateTask } from "../features/tasks/task.api";
 import KanbanBoard from "../features/tasks/components/KanbanBoard";
 import QuickCapture from "../features/tasks/components/QuickCapture";
+import TaskEditor from "../features/tasks/components/TaskEditor";
 import type { Task, TaskStatus } from "../features/tasks/task.types";
 import { DEMO_USER_ID } from "../lib/demo-user";
 
 function TasksPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -49,6 +51,30 @@ function TasksPage() {
     }
   }
 
+  function handleEditTask(task: Task) {
+    setEditingTask(task);
+  }
+
+  async function handleSaveTask(
+    task: Task,
+    input: {
+      title: string;
+      description: string | null;
+      priority: Task["priority"];
+      dueDate: string | null;
+    },
+  ) {
+    setError(null);
+
+    const updatedTask = await updateTask(task.id, DEMO_USER_ID, input);
+
+    setTasks((currentTasks) =>
+      currentTasks.map((currentTask) =>
+        currentTask.id === updatedTask.id ? updatedTask : currentTask,
+      ),
+    );
+  }
+
   async function handleStatusChange(task: Task, status: TaskStatus) {
     try {
       setError(null);
@@ -79,13 +105,13 @@ function TasksPage() {
 
   return (
     <section className="space-y-6">
-      {/* <div className="flex items-start justify-between gap-4"> */}
-      <div>
-        <h2 className="text-2xl font-semibold tracking-tight">Tasks</h2>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h2 className="text-2xl font-semibold tracking-tight">Tasks</h2>
 
-        <p className="mt-1 text-sm text-gray-500">Capture, organize and execute.</p>
+          <p className="mt-1 text-sm text-gray-500">Capture, organize and execute.</p>
+        </div>
       </div>
-      {/* </div> */}
       <QuickCapture onCreate={handleCreateTask} disabled={loading} />
 
       {error && (
@@ -102,6 +128,15 @@ function TasksPage() {
             tasks={tasks}
             onStatusChange={handleStatusChange}
             onDelete={handleDeleteTask}
+            onEdit={handleEditTask}
+          />
+        )}
+
+        {editingTask && (
+          <TaskEditor
+            task={editingTask}
+            onSave={handleSaveTask}
+            onClose={() => setEditingTask(null)}
           />
         )}
       </div>
