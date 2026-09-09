@@ -134,6 +134,7 @@ function TasksPage() {
 
         {editingTask && (
           <TaskEditor
+            key={editingTask.id}
             task={editingTask}
             onSave={handleSaveTask}
             onClose={() => setEditingTask(null)}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import type { Task, TaskPriority } from "../task.types";
 
@@ -24,13 +24,6 @@ function TaskEditor({ task, onSave, onClose }: TaskEditorProps) {
 
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    setTitle(task.title);
-    setDescription(task.description ?? "");
-    setPriority(task.priority);
-    setDueDate(task.dueDate ? task.dueDate.slice(0, 10) : "");
-  }, [task]);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
