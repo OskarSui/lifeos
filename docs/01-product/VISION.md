@@ -18,3 +18,8 @@ Within 30–60 seconds, a user should be able to:
 4. Capture an idea.
 5. Move a task through the workflow.
 6. Review progress at the end of the day.
+
+# Главная идея
+
+LifeOS не спрашивает: “Как организовать мои задачи?”
+LifeOS отвечает: “Что мне делать сейчас?”
