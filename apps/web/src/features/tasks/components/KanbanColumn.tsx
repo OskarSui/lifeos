@@ -3,7 +3,6 @@ import TaskCard from "./TaskCard";
 
 interface KanbanColumnProps {
   title: string;
-  status: TaskStatus;
   tasks: Task[];
   onStatusChange: (task: Task, status: TaskStatus) => void;
   onDelete: (task: Task) => void;

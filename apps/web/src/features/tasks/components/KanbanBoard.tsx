@@ -36,7 +36,6 @@ function KanbanBoard({ tasks, onStatusChange, onDelete, onEdit }: KanbanBoardPro
           <KanbanColumn
             key={column.status}
             title={column.title}
-            status={column.status}
             tasks={columnTasks}
             onStatusChange={onStatusChange}
             onDelete={onDelete}

@@ -9,7 +9,7 @@ function QuickCapture({ onCreate, disabled = false }: QuickCaptureProps) {
   const [title, setTitle] = useState("");
   const [creating, setCreating] = useState(false);
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
 
     const trimmedTitle = title.trim();
