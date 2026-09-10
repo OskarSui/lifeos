@@ -11,7 +11,7 @@ interface KanbanColumnProps {
 
 function KanbanColumn({ title, tasks, onStatusChange, onDelete, onEdit }: KanbanColumnProps) {
   return (
-    <section className="min-w-0 rounded-xl bg-gray-100 p-3">
+    <section className="min-w-0 rounded-xl bg-gray-100 p-3 sm:p-4">
       <div className="mb-3 flex items-center justify-between">
         <h3 className="text-sm font-semibold text-gray-700">{title}</h3>
 

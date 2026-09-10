@@ -12,7 +12,7 @@ function TodayFocusComponent({ focus, tasks, onSelect, disabled = false }: Today
   const availableTasks = tasks.filter((task) => task.status !== "DONE");
 
   return (
-    <section className="rounded-xl border bg-white p-5 shadow-sm">
+    <section className="rounded-xl border bg-white p-4 shadow-sm sm:p-5">
       <div>
         <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">
           Today&apos;s Focus
@@ -22,7 +22,7 @@ function TodayFocusComponent({ focus, tasks, onSelect, disabled = false }: Today
       </div>
 
       {focus ? (
-        <div className="mt-5 rounded-lg border bg-gray-50 p-4">
+        <div className="mt-4 rounded-lg border bg-gray-50 p-4 sm:mt-5 ">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div className="min-w-0">
               <p className="break-words font-medium text-gray-900">{focus.task.title}</p>

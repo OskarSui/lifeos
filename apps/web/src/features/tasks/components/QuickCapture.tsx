@@ -30,8 +30,8 @@ function QuickCapture({ onCreate, disabled = false }: QuickCaptureProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="rounded-xl border bg-white p-3 shadow-sm">
-      <div className="flex gap-2">
+    <form onSubmit={handleSubmit} className="rounded-xl border bg-white p-3 shadow-sm sm:p-4">
+      <div className="flex flex-col gap-2 sm:flex-row ">
         <input
           type="text"
           value={title}
@@ -39,13 +39,13 @@ function QuickCapture({ onCreate, disabled = false }: QuickCaptureProps) {
           placeholder="What needs to be done?"
           disabled={disabled || creating}
           maxLength={200}
-          className="min-w-0 flex-1 rounded-lg border px-3 py-2 text-sm outline-none placeholder:text-gray-400 focus:border-gray-400 focus:ring-2 focus:ring-gray-100 disabled:bg-gray-50"
+          className="min-h-11 min-w-0 flex-1 rounded-lg border px-3 py-2.5 text-sm outline-none placeholder:text-gray-400 focus:border-gray-400 focus:ring-2 focus:ring-gray-100 disabled:bg-gray-50"
         />
 
         <button
           type="submit"
           disabled={disabled || creating || title.trim().length === 0}
-          className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
+          className="min-h-11 rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
         >
           {creating ? "Adding..." : "Add"}
         </button>

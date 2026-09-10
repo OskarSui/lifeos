@@ -200,7 +200,7 @@ function TaskEditor({ task, goals, onSave, onClose }: TaskEditorProps) {
               type="button"
               onClick={onClose}
               disabled={saving}
-              className="rounded-lg border px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+              className="min-h-11 rounded-lg border px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
             >
               Cancel
             </button>
@@ -208,7 +208,7 @@ function TaskEditor({ task, goals, onSave, onClose }: TaskEditorProps) {
             <button
               type="submit"
               disabled={saving}
-              className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-50"
+              className="min-h-11 rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-50"
             >
               {saving ? "Saving..." : "Save changes"}
             </button>

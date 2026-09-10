@@ -52,7 +52,7 @@ function TodayDashboard() {
 
   const loadDashboard = useCallback(async () => {
     try {
-    //   setLoading(true);
+      //   setLoading(true);
       setError(null);
 
       const [dashboard, goals] = await Promise.all([
@@ -75,8 +75,21 @@ function TodayDashboard() {
   }, []);
 
   useEffect(() => {
-    void loadDashboard();
-  }, [loadDashboard]);
+    Promise.all([getTodayDashboard(DEMO_USER_ID), getGoals(DEMO_USER_ID)])
+      .then(([dashboard, goals]) => {
+        setTasks(dashboard.tasks);
+        setFocus(dashboard.focus);
+        setCounts(dashboard.counts);
+        setProgress(dashboard.progress);
+        setGoals(goals);
+      })
+      .catch((error: unknown) => {
+        setError(error instanceof Error ? error.message : "Failed to load dashboard");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
 
   async function handleCreateTask(title: string) {
     try {
@@ -183,13 +196,17 @@ function TodayDashboard() {
   return (
     <div className="space-y-6">
       <header>
-        <p className="text-sm font-medium text-gray-400">Today</p>
+        <p className="text-xs font-medium uppercase tracking-wider text-gray-400 sm:text-sm sm:normal-case sm:tracking-normal">
+          Today
+        </p>
 
         <h1 className="mt-1 text-2xl font-semibold tracking-tight text-gray-900 sm:text-3xl">
           What matters now?
         </h1>
 
-        <p className="mt-2 text-sm text-gray-500">Focus on one important action and keep moving.</p>
+        <p className="mt-2 max-w-xl text-sm leading-6 text-gray-500">
+          Focus on one important action and keep moving.
+        </p>
       </header>
 
       {error && (
@@ -203,14 +220,7 @@ function TodayDashboard() {
 
       <TodayFocus focus={focus} tasks={tasks} onSelect={handleSelectFocus} disabled={loading} />
 
-      <div className="grid gap-4 lg:grid-cols-2">
-        <GoalForm onCreate={handleCreateGoal} disabled={loading} />
-
-        <GoalList goals={goals} />
-      </div>
-
       <TodayProgress counts={counts} progress={progress} />
-
       <QuickCapture onCreate={handleCreateTask} disabled={loading} />
 
       <KanbanBoard
@@ -219,6 +229,11 @@ function TodayDashboard() {
         onDelete={handleDeleteTask}
         onEdit={handleEditTask}
       />
+
+      <div className="grid gap-4 lg:grid-cols-2">
+        <GoalForm onCreate={handleCreateGoal} disabled={loading} />
+        <GoalList goals={goals} />
+      </div>
 
       {editingTask && (
         <TaskEditor
