@@ -7,7 +7,7 @@ interface TodayProgressProps {
 
 function TodayProgress({ counts, progress }: TodayProgressProps) {
   return (
-    <section className="rounded-xl border bg-white p-5 shadow-sm">
+    <section className="rounded-xl border bg-white p-5 shadow-sm sm:p-5">
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">Today</p>
@@ -18,7 +18,7 @@ function TodayProgress({ counts, progress }: TodayProgressProps) {
         <span className="text-2xl font-semibold text-gray-900">{progress.percentage}%</span>
       </div>
 
-      <div className="mt-5 grid grid-cols-3 gap-3">
+      <div className="mt-4 grid grid-cols-3 gap-2 sm:mt-5 sm:gap-3">
         <ProgressStat label="Inbox" value={counts.inbox} />
 
         <ProgressStat label="In progress" value={counts.inProgress} />
@@ -62,7 +62,7 @@ interface ProgressStatProps {
 
 function ProgressStat({ label, value }: ProgressStatProps) {
   return (
-    <div className="rounded-lg bg-gray-50 p-3">
+    <div className="rounded-lg bg-gray-50 p-3 sm:p-4">
       <p className="text-xs text-gray-400">{label}</p>
 
       <p className="mt-1 text-xl font-semibold text-gray-900">{value}</p>

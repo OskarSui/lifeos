@@ -1,9 +1,11 @@
 import { useState } from "react";
 
 import type { Task, TaskPriority } from "../task.types";
+import type { Goal } from "../../goals/goal.types";
 
 interface TaskEditorProps {
   task: Task;
+  goals: Goal[];
   onSave: (
     task: Task,
     input: {
@@ -11,21 +13,23 @@ interface TaskEditorProps {
       description: string | null;
       priority: TaskPriority;
       dueDate: string | null;
+      goalId: string | null;
     },
   ) => Promise<void>;
   onClose: () => void;
 }
 
-function TaskEditor({ task, onSave, onClose }: TaskEditorProps) {
+function TaskEditor({ task, goals, onSave, onClose }: TaskEditorProps) {
   const [title, setTitle] = useState(task.title);
   const [description, setDescription] = useState(task.description ?? "");
   const [priority, setPriority] = useState<TaskPriority>(task.priority);
   const [dueDate, setDueDate] = useState(task.dueDate ? task.dueDate.slice(0, 10) : "");
 
+  const [goalId, setGoalId] = useState(task.goalId ?? "");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
 
     const trimmedTitle = title.trim();
@@ -44,6 +48,7 @@ function TaskEditor({ task, onSave, onClose }: TaskEditorProps) {
         description: description.trim() || null,
         priority,
         dueDate: dueDate ? `${dueDate}T00:00:00.000Z` : null,
+        goalId: goalId || null,
       });
 
       onClose();
@@ -119,6 +124,30 @@ function TaskEditor({ task, onSave, onClose }: TaskEditorProps) {
             />
           </div>
 
+          <div>
+            <label htmlFor="task-goal" className="mb-1 block text-sm font-medium text-gray-700">
+              Goal
+            </label>
+
+            <select
+              id="task-goal"
+              value={goalId}
+              onChange={(event) => setGoalId(event.target.value)}
+              disabled={saving}
+              className="w-full rounded-lg border bg-white px-3 py-2 text-sm"
+            >
+              <option value="">No goal</option>
+
+              {goals
+                .filter((goal) => goal.status === "ACTIVE")
+                .map((goal) => (
+                  <option key={goal.id} value={goal.id}>
+                    {goal.title}
+                  </option>
+                ))}
+            </select>
+          </div>
+
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <label
@@ -171,7 +200,7 @@ function TaskEditor({ task, onSave, onClose }: TaskEditorProps) {
               type="button"
               onClick={onClose}
               disabled={saving}
-              className="rounded-lg border px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+              className="min-h-11 rounded-lg border px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
             >
               Cancel
             </button>
@@ -179,7 +208,7 @@ function TaskEditor({ task, onSave, onClose }: TaskEditorProps) {
             <button
               type="submit"
               disabled={saving}
-              className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-50"
+              className="min-h-11 rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-50"
             >
               {saving ? "Saving..." : "Save changes"}
             </button>

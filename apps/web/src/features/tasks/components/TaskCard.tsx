@@ -24,11 +24,11 @@ function TaskCard({ task, onStatusChange, onDelete, onEdit }: TaskCardProps) {
         </div>
       </div>
 
-      <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+      <div className="mt-4 grid grid-cols-1 gap-2 sm:flex">
         <select
           value={task.status}
           onChange={(event) => onStatusChange(task, event.target.value as TaskStatus)}
-          className="min-h-9 w-full rounded-md border bg-white px-2 py-1 text-sm sm:w-auto"
+          className="min-h-11 w-full rounded-md border bg-white px-3 py-2 text-sm sm:w-auto"
         >
           <option value="INBOX">Inbox</option>
 
@@ -40,7 +40,7 @@ function TaskCard({ task, onStatusChange, onDelete, onEdit }: TaskCardProps) {
         <button
           type="button"
           onClick={() => onEdit(task)}
-          className="min-h-9 rounded-md border px-3 py-1 text-sm text-gray-600 hover:bg-gray-50"
+          className="min-h-11 rounded-md border px-4 py-2 text-sm text-gray-600 hover:bg-gray-50"
         >
           Edit
         </button>
@@ -48,7 +48,7 @@ function TaskCard({ task, onStatusChange, onDelete, onEdit }: TaskCardProps) {
         <button
           type="button"
           onClick={() => onDelete(task)}
-          className="min-h-9 rounded-md border px-3 py-1 text-sm text-gray-600 hover:bg-gray-50"
+          className="min-h-11 rounded-md border px-4 py-2 text-sm text-gray-600 hover:bg-gray-50"
         >
           Delete
         </button>

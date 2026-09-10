@@ -8,6 +8,7 @@ import { errorHandler } from './middleware/errorHandler.js';
 import taskRoutes from './routes/taskRoutes.js';
 import dashboardRoutes from './routes/dashboardRoutes.js';
 import focusRoutes from './routes/focusRoutes.js';
+import goalRoutes from './routes/goalRoutes.js';
 
 export const app = express();
 
@@ -36,6 +37,8 @@ app.get('/health', async (_req, res, next) => {
 });
 
 app.use('/api/v1/tasks', taskRoutes);
+
+app.use('/api/v1/goals', goalRoutes);
 
 app.use('/api/v1/focus', focusRoutes);
 
