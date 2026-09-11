@@ -1,4 +1,5 @@
 import type { DashboardCounts, DashboardProgress } from "../dashboard.types";
+import Card from "../../../components/ui/Card";
 
 interface TodayProgressProps {
   counts: DashboardCounts;
@@ -7,7 +8,7 @@ interface TodayProgressProps {
 
 function TodayProgress({ counts, progress }: TodayProgressProps) {
   return (
-    <section className="rounded-xl border bg-white p-5 shadow-sm sm:p-5">
+    <Card className="p-4 sm:p-5">
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">Today</p>
@@ -51,7 +52,7 @@ function TodayProgress({ counts, progress }: TodayProgressProps) {
           <span>{progress.percentage}%</span>
         </div>
       </div>
-    </section>
+    </Card>
   );
 }
 

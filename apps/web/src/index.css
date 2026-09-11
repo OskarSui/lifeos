@@ -1,6 +1,93 @@
 @import "tailwindcss";
 
 :root {
+  /* ========================================
+     COLOR TOKENS
+     ======================================== */
+
+  /* Background */
+  --color-bg: #f7f8fa;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f4f4f5;
+
+  /* Text */
+  --color-text: #18181b;
+  --color-text-secondary: #71717a;
+  --color-text-muted: #a1a1aa;
+  --color-text-inverse: #ffffff;
+
+  /* Border */
+  --color-border: #e4e4e7;
+  --color-border-strong: #d4d4d8;
+
+  /* Brand */
+  --color-primary: #6366f1;
+  --color-primary-hover: #4f46e5;
+  --color-primary-soft: #eef2ff;
+  --color-primary-text: #4338ca;
+
+  /* Success */
+  --color-success: #16a34a;
+  --color-success-hover: #15803d;
+  --color-success-soft: #f0fdf4;
+  --color-success-text: #15803d;
+
+  /* Warning */
+  --color-warning: #d97706;
+  --color-warning-hover: #b45309;
+  --color-warning-soft: #fffbeb;
+  --color-warning-text: #b45309;
+
+  /* Danger */
+  --color-danger: #dc2626;
+  --color-danger-hover: #b91c1c;
+  --color-danger-soft: #fef2f2;
+  --color-danger-text: #b91c1c;
+
+  /* ========================================
+     COMPONENT TOKENS
+     ======================================== */
+
+  /* Buttons */
+  --button-primary-bg: var(--color-primary);
+  --button-primary-bg-hover: var(--color-primary-hover);
+  --button-primary-text: var(--color-text-inverse);
+
+  --button-secondary-bg: var(--color-surface);
+  --button-secondary-bg-hover: var(--color-surface-muted);
+  --button-secondary-text: var(--color-text);
+
+  --button-danger-bg: var(--color-danger);
+  --button-danger-bg-hover: var(--color-danger-hover);
+  --button-danger-text: var(--color-text-inverse);
+
+  /* Cards */
+  --card-bg: var(--color-surface);
+  --card-border: var(--color-border);
+  --card-shadow: 0 1px 2px rgb(0 0 0 / 0.03);
+  --card-shadow-hover: 0 4px 12px rgb(0 0 0 / 0.05);
+
+  /* Inputs */
+  --input-bg: var(--color-surface);
+  --input-border: var(--color-border-strong);
+  --input-border-focus: var(--color-primary);
+  --input-text: var(--color-text);
+  --input-placeholder: var(--color-text-muted);
+
+  /* ========================================
+     RADIUS
+     ======================================== */
+
+  --radius-sm: 0.5rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.25rem;
+
+  /* ========================================
+     TYPOGRAPHY
+     ======================================== */
+
   font-family:
     Inter,
     system-ui,
@@ -9,14 +96,18 @@
     "Segoe UI",
     sans-serif;
 
-  color: #111827;
-  background: #f9fafb;
+  color: var(--color-text);
+  background: var(--color-bg);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* ========================================
+   GLOBAL RESET
+   ======================================== */
 
 * {
   box-sizing: border-box;
@@ -30,4 +121,6 @@ body,
 
 body {
   margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
 }

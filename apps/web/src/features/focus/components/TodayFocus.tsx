@@ -1,5 +1,6 @@
 import type { Task } from "../../tasks/task.types";
 import type { TodayFocus } from "../focus.types";
+import Card from "../../../components/ui/Card";
 
 interface TodayFocusProps {
   focus: TodayFocus | null;
@@ -12,7 +13,7 @@ function TodayFocusComponent({ focus, tasks, onSelect, disabled = false }: Today
   const availableTasks = tasks.filter((task) => task.status !== "DONE");
 
   return (
-    <section className="rounded-xl border bg-white p-4 shadow-sm sm:p-5">
+    <Card className="p-4 sm:p-5">
       <div>
         <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">
           Today&apos;s Focus
@@ -76,7 +77,7 @@ function TodayFocusComponent({ focus, tasks, onSelect, disabled = false }: Today
           <p className="mt-2 text-xs text-gray-400">Create a task first.</p>
         )}
       </div>
-    </section>
+    </Card>
   );
 }
 
