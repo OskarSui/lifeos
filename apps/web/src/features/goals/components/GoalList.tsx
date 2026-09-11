@@ -1,3 +1,4 @@
+import Badge from "../../../components/ui/Badge";
 import type { Goal } from "../goal.types";
 
 interface GoalListProps {
@@ -35,9 +36,17 @@ function GoalList({ goals }: GoalListProps) {
                 )}
               </div>
 
-              <span className="shrink-0 rounded-full bg-white px-2.5 py-1 text-xs font-medium text-gray-500">
+              <Badge
+                variant={
+                  goal.status === "COMPLETED"
+                    ? "success"
+                    : goal.status === "ARCHIVED"
+                      ? "neutral"
+                      : "primary"
+                }
+              >
                 {goal.status}
-              </span>
+              </Badge>
             </div>
           </div>
         ))}

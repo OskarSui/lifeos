@@ -1,4 +1,6 @@
 import { useState, type FormEvent } from "react";
+import Input from "../../../components/ui/Input";
+import Button from "../../../components/ui/Button";
 
 interface GoalFormProps {
   onCreate: (title: string, description: string) => Promise<void>;
@@ -44,15 +46,11 @@ function GoalForm({ onCreate, disabled = false }: GoalFormProps) {
             Goal
           </label>
 
-          <input
-            id="goal-title"
-            type="text"
+          <Input
             value={title}
             onChange={(event) => setTitle(event.target.value)}
-            maxLength={200}
-            disabled={disabled || creating}
-            placeholder="What do you want to achieve?"
-            className="w-full rounded-lg border px-3 py-2 text-sm outline-none focus:border-gray-400 focus:ring-2 focus:ring-gray-100 disabled:bg-gray-50"
+            placeholder="e.g. Build my portfolio"
+            disabled={creating || disabled}
           />
         </div>
 
@@ -76,13 +74,9 @@ function GoalForm({ onCreate, disabled = false }: GoalFormProps) {
           />
         </div>
 
-        <button
-          type="submit"
-          disabled={disabled || creating || title.trim().length === 0}
-          className="w-full rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
-        >
+        <Button type="submit" disabled={creating || !title.trim()}>
           {creating ? "Creating..." : "Create goal"}
-        </button>
+        </Button>
       </div>
     </form>
   );

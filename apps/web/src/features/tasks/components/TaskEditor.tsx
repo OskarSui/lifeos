@@ -2,6 +2,8 @@ import { useState } from "react";
 
 import type { Task, TaskPriority } from "../task.types";
 import type { Goal } from "../../goals/goal.types";
+import Input from "../../../components/ui/Input";
+import Select from "../../../components/ui/Select";
 
 interface TaskEditorProps {
   task: Task;
@@ -93,14 +95,11 @@ function TaskEditor({ task, goals, onSave, onClose }: TaskEditorProps) {
               Title
             </label>
 
-            <input
+            <Input
               id="task-title"
-              type="text"
               value={title}
               onChange={(event) => setTitle(event.target.value)}
-              maxLength={200}
               disabled={saving}
-              className="w-full rounded-lg border px-3 py-2 text-sm outline-none focus:border-gray-400 focus:ring-2 focus:ring-gray-100"
             />
           </div>
 
@@ -129,12 +128,11 @@ function TaskEditor({ task, goals, onSave, onClose }: TaskEditorProps) {
               Goal
             </label>
 
-            <select
+            <Select
               id="task-goal"
               value={goalId}
               onChange={(event) => setGoalId(event.target.value)}
               disabled={saving}
-              className="w-full rounded-lg border bg-white px-3 py-2 text-sm"
             >
               <option value="">No goal</option>
 
@@ -145,7 +143,7 @@ function TaskEditor({ task, goals, onSave, onClose }: TaskEditorProps) {
                     {goal.title}
                   </option>
                 ))}
-            </select>
+            </Select>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
@@ -157,17 +155,16 @@ function TaskEditor({ task, goals, onSave, onClose }: TaskEditorProps) {
                 Priority
               </label>
 
-              <select
+              <Select
                 id="task-priority"
                 value={priority}
                 onChange={(event) => setPriority(event.target.value as TaskPriority)}
                 disabled={saving}
-                className="w-full rounded-lg border bg-white px-3 py-2 text-sm"
               >
                 <option value="LOW">Low</option>
                 <option value="MEDIUM">Medium</option>
                 <option value="HIGH">High</option>
-              </select>
+              </Select>
             </div>
 
             <div>

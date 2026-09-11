@@ -75,6 +75,39 @@
   --input-placeholder: var(--color-text-muted);
 
   /* ========================================
+   BADGE TOKENS
+   ======================================== */
+
+  --badge-neutral-bg: var(--color-surface-muted);
+  --badge-neutral-text: var(--color-text-secondary);
+
+  --badge-primary-bg: var(--color-primary-soft);
+  --badge-primary-text: var(--color-primary-text);
+
+  --badge-success-bg: var(--color-success-soft);
+  --badge-success-text: var(--color-success-text);
+
+  --badge-warning-bg: var(--color-warning-soft);
+  --badge-warning-text: var(--color-warning-text);
+
+  --badge-danger-bg: var(--color-danger-soft);
+  --badge-danger-text: var(--color-danger-text);
+
+  /* ========================================
+   INPUT TOKENS
+   ======================================== */
+
+  --input-bg: var(--color-surface);
+  --input-border: var(--color-border);
+  --input-border-hover: var(--color-border-strong);
+  --input-border-focus: var(--color-primary);
+
+  --input-text: var(--color-text);
+  --input-placeholder: var(--color-text-muted);
+
+  --input-ring: rgb(99 102 241 / 0.15);
+
+  /* ========================================
      RADIUS
      ======================================== */
 
