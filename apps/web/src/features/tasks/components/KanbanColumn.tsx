@@ -3,13 +3,21 @@ import TaskCard from "./TaskCard";
 
 interface KanbanColumnProps {
   title: string;
+  status: TaskStatus;
   tasks: Task[];
   onStatusChange: (task: Task, status: TaskStatus) => void;
   onDelete: (task: Task) => void;
   onEdit: (task: Task) => void;
 }
 
-function KanbanColumn({ title, tasks, onStatusChange, onDelete, onEdit }: KanbanColumnProps) {
+function KanbanColumn({
+  title,
+  status,
+  tasks,
+  onStatusChange,
+  onDelete,
+  onEdit,
+}: KanbanColumnProps) {
   return (
     <section className="min-w-0 rounded-xl bg-gray-100 p-3 sm:p-4">
       <div className="mb-3 flex items-center justify-between">
@@ -23,7 +31,11 @@ function KanbanColumn({ title, tasks, onStatusChange, onDelete, onEdit }: Kanban
       <div className="space-y-3">
         {tasks.length === 0 ? (
           <div className="rounded-lg border border-dashed border-gray-300 bg-white/50 p-4 text-center text-sm text-gray-400">
-            No tasks
+            {status === "INBOX"
+              ? "Capture your next idea here."
+              : status === "IN_PROGRESS"
+                ? "Nothing in progress."
+                : "No completed tasks yet."}
           </div>
         ) : (
           tasks.map((task) => (

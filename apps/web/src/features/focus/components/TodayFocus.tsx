@@ -40,7 +40,7 @@ function TodayFocusComponent({ focus, tasks, onSelect, disabled = false }: Today
       ) : (
         <div className="mt-5 rounded-lg border border-dashed border-gray-300 p-5">
           <p className="text-sm text-gray-500">
-            You haven&apos;t selected your main task for today.
+            Choose one important task below as your main focus for today.
           </p>
         </div>
       )}
