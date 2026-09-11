@@ -1,5 +1,5 @@
 import type { DashboardCounts, DashboardProgress } from "../dashboard.types";
-import Card from "../../../components/ui/Card";
+import {Card} from "../../../components/ui/card";
 
 interface TodayProgressProps {
   counts: DashboardCounts;

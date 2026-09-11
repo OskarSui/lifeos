@@ -1,4 +1,4 @@
-import Badge from "../../../components/ui/Badge";
+import { Badge } from "../../../components/ui/badge";
 import type { Task, TaskStatus } from "../task.types";
 
 interface TaskCardProps {
@@ -22,10 +22,10 @@ function TaskCard({ task, onStatusChange, onDelete, onEdit }: TaskCardProps) {
           <Badge
             variant={
               task.priority === "HIGH"
-                ? "danger"
+                ? "destructive"
                 : task.priority === "MEDIUM"
-                  ? "warning"
-                  : "neutral"
+                  ? "secondary"
+                  : "outline"
             }
           >
             {task.priority}
@@ -34,10 +34,10 @@ function TaskCard({ task, onStatusChange, onDelete, onEdit }: TaskCardProps) {
           <Badge
             variant={
               task.status === "DONE"
-                ? "success"
+                ? "default"
                 : task.status === "IN_PROGRESS"
-                  ? "primary"
-                  : "neutral"
+                  ? "secondary"
+                  : "outline"
             }
           >
             {task.status.replace("_", " ")}

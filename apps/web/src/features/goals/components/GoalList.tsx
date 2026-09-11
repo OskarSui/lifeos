@@ -1,4 +1,4 @@
-import Badge from "../../../components/ui/Badge";
+import { Badge } from "../../../components/ui/badge";
 import type { Goal } from "../goal.types";
 
 interface GoalListProps {
@@ -39,10 +39,10 @@ function GoalList({ goals }: GoalListProps) {
               <Badge
                 variant={
                   goal.status === "COMPLETED"
-                    ? "success"
+                    ? "secondary"
                     : goal.status === "ARCHIVED"
-                      ? "neutral"
-                      : "primary"
+                      ? "outline"
+                      : "default"
                 }
               >
                 {goal.status}

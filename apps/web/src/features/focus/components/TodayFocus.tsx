@@ -1,6 +1,6 @@
 import type { Task } from "../../tasks/task.types";
 import type { TodayFocus } from "../focus.types";
-import Card from "../../../components/ui/Card";
+import { Card } from "../../../components/ui/card";
 
 interface TodayFocusProps {
   focus: TodayFocus | null;
@@ -14,37 +14,39 @@ function TodayFocusComponent({ focus, tasks, onSelect, disabled = false }: Today
 
   return (
     <Card className="p-4 sm:p-5">
-      <div>
-        <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">
-          Today&apos;s Focus
-        </p>
+      <div className="rounded-xl border border-[var(--color-primary)]/15 bg-[var(--color-primary-soft)] p-4 sm:p-5">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[var(--color-primary-text)]">
+              Today's Focus
+            </p>
 
-        <h2 className="mt-1 text-lg font-semibold text-gray-900">What matters most today?</h2>
-      </div>
+            {focus ? (
+              <>
+                <h2 className="mt-2 text-xl font-semibold tracking-tight text-[var(--color-text)] sm:text-2xl">
+                  {focus.task.title}
+                </h2>
 
-      {focus ? (
-        <div className="mt-4 rounded-lg border bg-gray-50 p-4 sm:mt-5 ">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-            <div className="min-w-0">
-              <p className="break-words font-medium text-gray-900">{focus.task.title}</p>
+                {focus.task.description && (
+                  <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--color-text-secondary)]">
+                    {focus.task.description}
+                  </p>
+                )}
+              </>
+            ) : (
+              <>
+                <h2 className="mt-2 text-xl font-semibold tracking-tight text-[var(--color-text)]">
+                  Choose your main task
+                </h2>
 
-              {focus.task.description && (
-                <p className="mt-1 break-words text-sm text-gray-500">{focus.task.description}</p>
-              )}
-            </div>
-
-            <span className="w-fit shrink-0 rounded-full bg-gray-900 px-2.5 py-1 text-xs font-medium text-white">
-              {focus.task.priority}
-            </span>
+                <p className="mt-2 text-sm leading-6 text-[var(--color-text-secondary)]">
+                  Choose one important task below as your main focus for today.
+                </p>
+              </>
+            )}
           </div>
         </div>
-      ) : (
-        <div className="mt-5 rounded-lg border border-dashed border-gray-300 p-5">
-          <p className="text-sm text-gray-500">
-            Choose one important task below as your main focus for today.
-          </p>
-        </div>
-      )}
+      </div>
 
       <div className="mt-5">
         <label htmlFor="today-focus" className="mb-2 block text-sm font-medium text-gray-700">

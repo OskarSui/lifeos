@@ -2,8 +2,14 @@ import { useState } from "react";
 
 import type { Task, TaskPriority } from "../task.types";
 import type { Goal } from "../../goals/goal.types";
-import Input from "../../../components/ui/Input";
-import Select from "../../../components/ui/Select";
+import { Input } from "../../../components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../../components/ui/select";
 
 interface TaskEditorProps {
   task: Task;
@@ -27,7 +33,7 @@ function TaskEditor({ task, goals, onSave, onClose }: TaskEditorProps) {
   const [priority, setPriority] = useState<TaskPriority>(task.priority);
   const [dueDate, setDueDate] = useState(task.dueDate ? task.dueDate.slice(0, 10) : "");
 
-  const [goalId, setGoalId] = useState(task.goalId ?? "");
+  const [goalId, setGoalId] = useState(task.goalId ?? "none");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -50,7 +56,7 @@ function TaskEditor({ task, goals, onSave, onClose }: TaskEditorProps) {
         description: description.trim() || null,
         priority,
         dueDate: dueDate ? `${dueDate}T00:00:00.000Z` : null,
-        goalId: goalId || null,
+        goalId: goalId === "none" ? null : goalId,
       });
 
       onClose();
@@ -128,21 +134,22 @@ function TaskEditor({ task, goals, onSave, onClose }: TaskEditorProps) {
               Goal
             </label>
 
-            <Select
-              id="task-goal"
-              value={goalId}
-              onChange={(event) => setGoalId(event.target.value)}
-              disabled={saving}
-            >
-              <option value="">No goal</option>
+            <Select value={goalId} onValueChange={setGoalId} disabled={saving}>
+              <SelectTrigger id="task-goal" className="w-full">
+                <SelectValue placeholder="No goal" />
+              </SelectTrigger>
 
-              {goals
-                .filter((goal) => goal.status === "ACTIVE")
-                .map((goal) => (
-                  <option key={goal.id} value={goal.id}>
-                    {goal.title}
-                  </option>
-                ))}
+              <SelectContent>
+                <SelectItem value="none">No goal</SelectItem>
+
+                {goals
+                  .filter((goal) => goal.status === "ACTIVE")
+                  .map((goal) => (
+                    <SelectItem key={goal.id} value={goal.id}>
+                      {goal.title}
+                    </SelectItem>
+                  ))}
+              </SelectContent>
             </Select>
           </div>
 
@@ -156,14 +163,19 @@ function TaskEditor({ task, goals, onSave, onClose }: TaskEditorProps) {
               </label>
 
               <Select
-                id="task-priority"
                 value={priority}
-                onChange={(event) => setPriority(event.target.value as TaskPriority)}
+                onValueChange={(value) => setPriority(value as TaskPriority)}
                 disabled={saving}
               >
-                <option value="LOW">Low</option>
-                <option value="MEDIUM">Medium</option>
-                <option value="HIGH">High</option>
+                <SelectTrigger id="task-priority" className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+
+                <SelectContent>
+                  <SelectItem value="LOW">Low</SelectItem>
+                  <SelectItem value="MEDIUM">Medium</SelectItem>
+                  <SelectItem value="HIGH">High</SelectItem>
+                </SelectContent>
               </Select>
             </div>
 

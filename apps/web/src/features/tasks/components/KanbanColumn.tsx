@@ -18,12 +18,36 @@ function KanbanColumn({
   onDelete,
   onEdit,
 }: KanbanColumnProps) {
-  return (
-    <section className="min-w-0 rounded-xl bg-gray-100 p-3 sm:p-4">
-      <div className="mb-3 flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-gray-700">{title}</h3>
+  const variantStyles = {
+    INBOX: {
+      accent: "bg-[var(--kanban-inbox-accent)]",
+      background: "bg-[var(--kanban-inbox-bg)]",
+    },
 
-        <span className="rounded-full bg-white px-2 py-0.5 text-xs text-gray-500">
+    IN_PROGRESS: {
+      accent: "bg-[var(--kanban-progress-accent)]",
+      background: "bg-[var(--kanban-progress-bg)]",
+    },
+
+    DONE: {
+      accent: "bg-[var(--kanban-done-accent)]",
+      background: "bg-[var(--kanban-done-bg)]",
+    },
+  };
+
+  const styles = variantStyles[status];
+  return (
+    <section className="flex min-h-[180px] flex-col rounded-xl border border-[var(--kanban-column-border)] bg-[var(--kanban-column-bg)] p-3 sm:p-4">
+      <div className="mb-3 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className={`h-2 w-2 rounded-full ${styles.accent}`} aria-hidden="true" />
+
+          <h2 className="text-sm font-semibold text-[var(--color-text)]">{title}</h2>
+        </div>
+
+        <span
+          className={`rounded-full px-2 py-0.5 text-xs font-medium text-[var(--color-text-secondary)] ${styles.background}`}
+        >
           {tasks.length}
         </span>
       </div>

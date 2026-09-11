@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from "react";
-import Input from "../../../components/ui/Input";
-import Button from "../../../components/ui/Button";
+import { Input } from "../../../components/ui/input";
+import { Button } from "../../../components/ui/button";
 
 interface GoalFormProps {
   onCreate: (title: string, description: string) => Promise<void>;
