@@ -2,6 +2,14 @@ import { useState } from "react";
 
 import type { Task, TaskPriority } from "../task.types";
 import type { Goal } from "../../goals/goal.types";
+import { Input } from "../../../components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../../components/ui/select";
 
 interface TaskEditorProps {
   task: Task;
@@ -25,7 +33,7 @@ function TaskEditor({ task, goals, onSave, onClose }: TaskEditorProps) {
   const [priority, setPriority] = useState<TaskPriority>(task.priority);
   const [dueDate, setDueDate] = useState(task.dueDate ? task.dueDate.slice(0, 10) : "");
 
-  const [goalId, setGoalId] = useState(task.goalId ?? "");
+  const [goalId, setGoalId] = useState(task.goalId ?? "none");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -48,7 +56,7 @@ function TaskEditor({ task, goals, onSave, onClose }: TaskEditorProps) {
         description: description.trim() || null,
         priority,
         dueDate: dueDate ? `${dueDate}T00:00:00.000Z` : null,
-        goalId: goalId || null,
+        goalId: goalId === "none" ? null : goalId,
       });
 
       onClose();
@@ -93,14 +101,11 @@ function TaskEditor({ task, goals, onSave, onClose }: TaskEditorProps) {
               Title
             </label>
 
-            <input
+            <Input
               id="task-title"
-              type="text"
               value={title}
               onChange={(event) => setTitle(event.target.value)}
-              maxLength={200}
               disabled={saving}
-              className="w-full rounded-lg border px-3 py-2 text-sm outline-none focus:border-gray-400 focus:ring-2 focus:ring-gray-100"
             />
           </div>
 
@@ -129,23 +134,23 @@ function TaskEditor({ task, goals, onSave, onClose }: TaskEditorProps) {
               Goal
             </label>
 
-            <select
-              id="task-goal"
-              value={goalId}
-              onChange={(event) => setGoalId(event.target.value)}
-              disabled={saving}
-              className="w-full rounded-lg border bg-white px-3 py-2 text-sm"
-            >
-              <option value="">No goal</option>
+            <Select value={goalId} onValueChange={setGoalId} disabled={saving}>
+              <SelectTrigger id="task-goal" className="w-full">
+                <SelectValue placeholder="No goal" />
+              </SelectTrigger>
 
-              {goals
-                .filter((goal) => goal.status === "ACTIVE")
-                .map((goal) => (
-                  <option key={goal.id} value={goal.id}>
-                    {goal.title}
-                  </option>
-                ))}
-            </select>
+              <SelectContent>
+                <SelectItem value="none">No goal</SelectItem>
+
+                {goals
+                  .filter((goal) => goal.status === "ACTIVE")
+                  .map((goal) => (
+                    <SelectItem key={goal.id} value={goal.id}>
+                      {goal.title}
+                    </SelectItem>
+                  ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
@@ -157,17 +162,21 @@ function TaskEditor({ task, goals, onSave, onClose }: TaskEditorProps) {
                 Priority
               </label>
 
-              <select
-                id="task-priority"
+              <Select
                 value={priority}
-                onChange={(event) => setPriority(event.target.value as TaskPriority)}
+                onValueChange={(value) => setPriority(value as TaskPriority)}
                 disabled={saving}
-                className="w-full rounded-lg border bg-white px-3 py-2 text-sm"
               >
-                <option value="LOW">Low</option>
-                <option value="MEDIUM">Medium</option>
-                <option value="HIGH">High</option>
-              </select>
+                <SelectTrigger id="task-priority" className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+
+                <SelectContent>
+                  <SelectItem value="LOW">Low</SelectItem>
+                  <SelectItem value="MEDIUM">Medium</SelectItem>
+                  <SelectItem value="HIGH">High</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             <div>

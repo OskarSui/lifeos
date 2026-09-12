@@ -1,3 +1,4 @@
+import { Badge } from "../../../components/ui/badge";
 import type { Goal } from "../goal.types";
 
 interface GoalListProps {
@@ -10,7 +11,7 @@ function GoalList({ goals }: GoalListProps) {
       <section className="rounded-xl border bg-white p-4 shadow-sm sm:p-5">
         <h2 className="text-lg font-semibold text-gray-900">Goals</h2>
 
-        <p className="mt-2 text-sm text-gray-500">No goals yet.</p>
+        <p className="mt-2 text-sm text-gray-500">Goals give your daily tasks a direction</p>
       </section>
     );
   }
@@ -35,9 +36,17 @@ function GoalList({ goals }: GoalListProps) {
                 )}
               </div>
 
-              <span className="shrink-0 rounded-full bg-white px-2.5 py-1 text-xs font-medium text-gray-500">
+              <Badge
+                variant={
+                  goal.status === "COMPLETED"
+                    ? "secondary"
+                    : goal.status === "ARCHIVED"
+                      ? "outline"
+                      : "default"
+                }
+              >
                 {goal.status}
-              </span>
+              </Badge>
             </div>
           </div>
         ))}

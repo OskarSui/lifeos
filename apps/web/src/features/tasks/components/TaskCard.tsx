@@ -1,3 +1,4 @@
+import { Badge } from "../../../components/ui/badge";
 import type { Task, TaskStatus } from "../task.types";
 
 interface TaskCardProps {
@@ -18,9 +19,29 @@ function TaskCard({ task, onStatusChange, onDelete, onEdit }: TaskCardProps) {
         )}
 
         <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-gray-500">
-          <span className="rounded-full bg-gray-100 px-2 py-1">{task.priority}</span>
+          <Badge
+            variant={
+              task.priority === "HIGH"
+                ? "destructive"
+                : task.priority === "MEDIUM"
+                  ? "secondary"
+                  : "outline"
+            }
+          >
+            {task.priority}
+          </Badge>
 
-          <span className="rounded-full bg-gray-100 px-2 py-1">{task.status}</span>
+          <Badge
+            variant={
+              task.status === "DONE"
+                ? "default"
+                : task.status === "IN_PROGRESS"
+                  ? "secondary"
+                  : "outline"
+            }
+          >
+            {task.status.replace("_", " ")}
+          </Badge>
         </div>
       </div>
 

@@ -7,27 +7,21 @@ import QuickCapture from "../../tasks/components/QuickCapture";
 import TaskEditor from "../../tasks/components/TaskEditor";
 
 import { setTodayFocus } from "../../focus/focus.api";
-
 import TodayFocus from "../../focus/components/TodayFocus";
-
 import { createGoal, getGoals } from "../../goals/goal.api";
 
 import GoalForm from "../../goals/components/GoalForm";
 import GoalList from "../../goals/components/GoalList";
 
 import TodayProgress from "./TodayProgress";
-
 import { getTodayDashboard } from "../dashboard.api";
-
 import type { DashboardCounts, DashboardProgress } from "../dashboard.types";
-
 import type { TodayFocus as TodayFocusType } from "../../focus/focus.types";
-
 import type { Goal } from "../../goals/goal.types";
-
 import type { Task, TaskStatus } from "../../tasks/task.types";
-
 import { DEMO_USER_ID } from "../../../lib/demo-user";
+import LoadingState from "../../../components/ui/LoadingState";
+import ErrorState from "../../../components/ui/ErrorState";
 
 function TodayDashboard() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -46,14 +40,20 @@ function TodayDashboard() {
     percentage: 0,
   });
 
-  const [loading, setLoading] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
 
-  const loadDashboard = useCallback(async () => {
+  const loadDashboard = useCallback(async (isInitialLoad = false) => {
     try {
-      //   setLoading(true);
       setError(null);
+
+      if (isInitialLoad) {
+        setInitialLoading(true);
+      } else {
+        setRefreshing(true);
+      }
 
       const [dashboard, goals] = await Promise.all([
         getTodayDashboard(DEMO_USER_ID),
@@ -65,12 +65,12 @@ function TodayDashboard() {
       setFocus(dashboard.focus);
       setCounts(dashboard.counts);
       setProgress(dashboard.progress);
-
       setGoals(goals);
     } catch (error) {
       setError(error instanceof Error ? error.message : "Failed to load dashboard");
     } finally {
-      setLoading(false);
+      setInitialLoading(false);
+      setRefreshing(false);
     }
   }, []);
 
@@ -87,7 +87,7 @@ function TodayDashboard() {
         setError(error instanceof Error ? error.message : "Failed to load dashboard");
       })
       .finally(() => {
-        setLoading(false);
+        setInitialLoading(false);
       });
   }, []);
 
@@ -195,18 +195,35 @@ function TodayDashboard() {
 
   return (
     <div className="space-y-6">
-      <header>
-        <p className="text-xs font-medium uppercase tracking-wider text-gray-400 sm:text-sm sm:normal-case sm:tracking-normal">
-          Today
-        </p>
+      <header className="flex items-start justify-between gap-4">
+        {initialLoading ? (
+          <LoadingState message="Loading your day..." />
+        ) : error && tasks.length === 0 ? (
+          <ErrorState
+            message={error}
+            onRetry={() => void loadDashboard(true)}
+            retrying={refreshing}
+          />
+        ) : (
+          <div>
+            <p className="text-xs font-medium uppercase tracking-wider text-gray-400 sm:text-sm sm:normal-case sm:tracking-normal">
+              Today
+            </p>
 
-        <h1 className="mt-1 text-2xl font-semibold tracking-tight text-gray-900 sm:text-3xl">
-          What matters now?
-        </h1>
+            <h1 className="mt-1 text-2xl font-semibold tracking-tight text-gray-900 sm:text-3xl">
+              What matters now?
+            </h1>
 
-        <p className="mt-2 max-w-xl text-sm leading-6 text-gray-500">
-          Focus on one important action and keep moving.
-        </p>
+            <p className="mt-2 max-w-xl text-sm leading-6 text-gray-500">
+              Focus on one important action and keep moving.
+            </p>
+          </div>
+        )}
+        {refreshing && (
+          <span className="shrink-0 text-xs text-gray-400" role="status">
+            Updating...
+          </span>
+        )}
       </header>
 
       {error && (
@@ -218,10 +235,25 @@ function TodayDashboard() {
         </div>
       )}
 
-      <TodayFocus focus={focus} tasks={tasks} onSelect={handleSelectFocus} disabled={loading} />
+      <TodayFocus
+        focus={focus}
+        tasks={tasks}
+        onSelect={handleSelectFocus}
+        disabled={initialLoading}
+      />
 
       <TodayProgress counts={counts} progress={progress} />
-      <QuickCapture onCreate={handleCreateTask} disabled={loading} />
+      <QuickCapture onCreate={handleCreateTask} disabled={initialLoading} />
+
+      {tasks.length === 0 && (
+        <div className="rounded-xl border border-dashed bg-white p-6 text-center sm:p-8">
+          <h2 className="text-lg font-semibold text-gray-900">Start with one task</h2>
+
+          <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-gray-500">
+            Capture the first thing you want to move forward today.
+          </p>
+        </div>
+      )}
 
       <KanbanBoard
         tasks={tasks}
@@ -231,7 +263,7 @@ function TodayDashboard() {
       />
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <GoalForm onCreate={handleCreateGoal} disabled={loading} />
+        <GoalForm onCreate={handleCreateGoal} disabled={initialLoading} />
         <GoalList goals={goals} />
       </div>
 
