@@ -30,7 +30,7 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3000
-      DATABASE_URL: postgresql://lifeos:[REDACTED]@postgres:5432/lifeos?schema=public
+      DATABASE_URL: postgresql://lifeos:lifeos@postgres:5432/lifeos?schema=public
       CORS_ORIGIN: http://localhost:8080
     ports:
       - "3001:3000"

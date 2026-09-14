@@ -20,7 +20,7 @@ app.use(
 
 app.use(express.json());
 
-app.get('/health', async (_req, res, next) => {
+app.get(['/health', '/api/v1/health'], async (_req, res, next) => {
   try {
     await prisma.$queryRaw`SELECT 1`;
 

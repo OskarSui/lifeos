@@ -31,6 +31,8 @@ ENV NODE_ENV=production
 COPY package*.json ./
 
 COPY --from=dependencies /app/node_modules ./node_modules
+COPY --from=build /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=build /app/node_modules/@prisma/client ./node_modules/@prisma/client
 
 COPY --from=build /app/dist ./dist
 
@@ -40,4 +42,4 @@ COPY prisma.config.ts ./
 
 EXPOSE 3000
 
-CMD ["node", "dist/server.js"]
+CMD ["sh", "-c", "npx prisma generate && npx prisma migrate deploy && node dist/server.js"]
