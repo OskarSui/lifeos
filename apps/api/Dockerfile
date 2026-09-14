@@ -15,6 +15,7 @@ COPY tsconfig.json ./
 COPY eslint.config.js ./
 COPY src ./src
 COPY prisma ./prisma
+COPY prisma.config.ts ./
 
 RUN npx prisma generate
 
@@ -35,6 +36,8 @@ COPY --from=build /app/dist ./dist
 
 COPY --from=build /app/prisma ./prisma
 
+COPY prisma.config.ts ./
+
 EXPOSE 3000
 
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/server.js"]
+CMD ["node", "dist/server.js"]
