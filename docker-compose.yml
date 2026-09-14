@@ -31,13 +31,24 @@ services:
       NODE_ENV: production
       PORT: 3000
       DATABASE_URL: postgresql://lifeos:lifeos@postgres:5432/lifeos?schema=public
-
+      CORS_ORIGIN: http://localhost:8080
     ports:
       - "3001:3000"
 
     depends_on:
       postgres:
         condition: service_healthy
+
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: http://localhost:3001/api/v1
+    container_name: lifeos-web
+    ports: -"8080:80"
+    depends_on:
+      - api
 
 volumes:
   postgres_data:
