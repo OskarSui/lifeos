@@ -59,6 +59,24 @@ describe('GET /health', () => {
       },
     });
   });
+
+  it('returns 200 for the /api/v1/health alias', async () => {
+    mockedPrisma.$queryRaw.mockResolvedValue([
+      {
+        '?column?': 1,
+      },
+    ]);
+
+    const response = await request(app).get('/api/v1/health').expect(200);
+
+    expect(response.body).toEqual({
+      success: true,
+      data: {
+        status: 'ok',
+        database: 'ok',
+      },
+    });
+  });
 });
 
 describe('POST /api/v1/tasks', () => {
