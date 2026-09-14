@@ -1,3 +1,5 @@
+import { Prisma } from '@prisma/client';
+
 import { prisma } from '../lib/prisma.js';
 
 export const focusRepository = {
@@ -26,7 +28,7 @@ export const focusRepository = {
   },
 
   async setToday(userId: string, taskId: string, date: Date) {
-    return prisma.$transaction(async (tx) => {
+    return prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       const task = await tx.task.findFirst({
         where: {
           id: taskId,

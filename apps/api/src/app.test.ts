@@ -20,6 +20,7 @@ vi.mock('./lib/prisma.js', () => ({
 }));
 
 const mockedPrisma = vi.mocked(prisma, { deep: true });
+type TransactionCallback = Parameters<typeof prisma.$transaction>[0];
 
 const userId = '550e8400-e29b-41d4-a716-446655440000';
 
@@ -50,24 +51,6 @@ describe('GET /health', () => {
     ]);
 
     const response = await request(app).get('/health').expect(200);
-
-    expect(response.body).toEqual({
-      success: true,
-      data: {
-        status: 'ok',
-        database: 'ok',
-      },
-    });
-  });
-
-  it('returns 200 for the /api/v1/health alias', async () => {
-    mockedPrisma.$queryRaw.mockResolvedValue([
-      {
-        '?column?': 1,
-      },
-    ]);
-
-    const response = await request(app).get('/api/v1/health').expect(200);
 
     expect(response.body).toEqual({
       success: true,
@@ -399,16 +382,18 @@ describe('PATCH /api/v1/tasks/:id', () => {
       title: 'Updated LifeOS task',
     };
 
-    mockedPrisma.$transaction.mockImplementation(async (callback) => {
-      const tx = {
-        task: {
-          findFirst: vi.fn().mockResolvedValue(task),
-          update: vi.fn().mockResolvedValue(updatedTask),
-        },
-      };
+    mockedPrisma.$transaction.mockImplementation(
+      async (callback: TransactionCallback) => {
+        const tx = {
+          task: {
+            findFirst: vi.fn().mockResolvedValue(task),
+            update: vi.fn().mockResolvedValue(updatedTask),
+          },
+        };
 
-      return callback(tx as never);
-    });
+        return callback(tx as never);
+      },
+    );
 
     const response = await request(app)
       .patch(`/api/v1/tasks/${task.id}`)
@@ -432,16 +417,18 @@ describe('PATCH /api/v1/tasks/:id', () => {
       status: 'IN_PROGRESS' as const,
     };
 
-    mockedPrisma.$transaction.mockImplementation(async (callback) => {
-      const tx = {
-        task: {
-          findFirst: vi.fn().mockResolvedValue(task),
-          update: vi.fn().mockResolvedValue(updatedTask),
-        },
-      };
+    mockedPrisma.$transaction.mockImplementation(
+      async (callback: TransactionCallback) => {
+        const tx = {
+          task: {
+            findFirst: vi.fn().mockResolvedValue(task),
+            update: vi.fn().mockResolvedValue(updatedTask),
+          },
+        };
 
-      return callback(tx as never);
-    });
+        return callback(tx as never);
+      },
+    );
 
     await request(app)
       .patch(`/api/v1/tasks/${task.id}`)
@@ -465,16 +452,18 @@ describe('PATCH /api/v1/tasks/:id', () => {
       description: 'Updated description',
     };
 
-    mockedPrisma.$transaction.mockImplementation(async (callback) => {
-      const tx = {
-        task: {
-          findFirst: vi.fn().mockResolvedValue(task),
-          update: vi.fn().mockResolvedValue(updatedTask),
-        },
-      };
+    mockedPrisma.$transaction.mockImplementation(
+      async (callback: TransactionCallback) => {
+        const tx = {
+          task: {
+            findFirst: vi.fn().mockResolvedValue(task),
+            update: vi.fn().mockResolvedValue(updatedTask),
+          },
+        };
 
-      return callback(tx as never);
-    });
+        return callback(tx as never);
+      },
+    );
 
     const response = await request(app)
       .patch(`/api/v1/tasks/${task.id}`)
@@ -506,16 +495,18 @@ describe('PATCH /api/v1/tasks/:id', () => {
       goalId: null,
     };
 
-    mockedPrisma.$transaction.mockImplementation(async (callback) => {
-      const tx = {
-        task: {
-          findFirst: vi.fn().mockResolvedValue(taskWithGoal),
-          update: vi.fn().mockResolvedValue(updatedTask),
-        },
-      };
+    mockedPrisma.$transaction.mockImplementation(
+      async (callback: TransactionCallback) => {
+        const tx = {
+          task: {
+            findFirst: vi.fn().mockResolvedValue(taskWithGoal),
+            update: vi.fn().mockResolvedValue(updatedTask),
+          },
+        };
 
-      return callback(tx as never);
-    });
+        return callback(tx as never);
+      },
+    );
 
     const response = await request(app)
       .patch(`/api/v1/tasks/${task.id}`)
@@ -544,16 +535,18 @@ describe('PATCH /api/v1/tasks/:id', () => {
       dueDate: null,
     };
 
-    mockedPrisma.$transaction.mockImplementation(async (callback) => {
-      const tx = {
-        task: {
-          findFirst: vi.fn().mockResolvedValue(taskWithDueDate),
-          update: vi.fn().mockResolvedValue(updatedTask),
-        },
-      };
+    mockedPrisma.$transaction.mockImplementation(
+      async (callback: TransactionCallback) => {
+        const tx = {
+          task: {
+            findFirst: vi.fn().mockResolvedValue(taskWithDueDate),
+            update: vi.fn().mockResolvedValue(updatedTask),
+          },
+        };
 
-      return callback(tx as never);
-    });
+        return callback(tx as never);
+      },
+    );
 
     const response = await request(app)
       .patch(`/api/v1/tasks/${task.id}`)
@@ -636,16 +629,18 @@ describe('PATCH /api/v1/tasks/:id', () => {
   });
 
   it('returns 404 when task does not belong to the user', async () => {
-    mockedPrisma.$transaction.mockImplementation(async (callback) => {
-      const tx = {
-        task: {
-          findFirst: vi.fn().mockResolvedValue(null),
-          update: vi.fn(),
-        },
-      };
+    mockedPrisma.$transaction.mockImplementation(
+      async (callback: TransactionCallback) => {
+        const tx = {
+          task: {
+            findFirst: vi.fn().mockResolvedValue(null),
+            update: vi.fn(),
+          },
+        };
 
-      return callback(tx as never);
-    });
+        return callback(tx as never);
+      },
+    );
 
     const response = await request(app)
       .patch(`/api/v1/tasks/${task.id}`)

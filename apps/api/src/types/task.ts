@@ -1,4 +1,5 @@
-import type { TaskPriority, TaskStatus } from '@prisma/client';
+export type TaskPriority = 'LOW' | 'MEDIUM' | 'HIGH';
+export type TaskStatus = 'INBOX' | 'IN_PROGRESS' | 'DONE';
 
 export interface CreateTaskInput {
   userId: string;

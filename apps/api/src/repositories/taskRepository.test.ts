@@ -17,6 +17,7 @@ vi.mock('../lib/prisma.js', () => ({
 }));
 
 const mockedPrisma = vi.mocked(prisma, { deep: true });
+type TransactionCallback = Parameters<typeof prisma.$transaction>[0];
 
 const userId = '550e8400-e29b-41d4-a716-446655440000';
 const taskId = '660e8400-e29b-41d4-a716-446655440000';
@@ -172,8 +173,8 @@ describe('taskRepository.update', () => {
     tx.task.findFirst.mockResolvedValue(task);
     tx.task.update.mockResolvedValue(updatedTask);
 
-    mockedPrisma.$transaction.mockImplementation(async (callback) =>
-      callback(tx as never),
+    mockedPrisma.$transaction.mockImplementation(
+      async (callback: TransactionCallback) => callback(tx as never),
     );
 
     const input = {
@@ -210,8 +211,8 @@ describe('taskRepository.update', () => {
 
     tx.task.findFirst.mockResolvedValue(null);
 
-    mockedPrisma.$transaction.mockImplementation(async (callback) =>
-      callback(tx as never),
+    mockedPrisma.$transaction.mockImplementation(
+      async (callback: TransactionCallback) => callback(tx as never),
     );
 
     const result = await taskRepository.update(taskId, userId, {

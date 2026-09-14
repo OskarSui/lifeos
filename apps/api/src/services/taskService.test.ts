@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { Task } from '@prisma/client';
 
 import { taskRepository } from '../repositories/taskRepository.js';
+import type { TaskResponse } from '../types/task.js';
 import { taskService } from './taskService.js';
 
 vi.mock('../repositories/taskRepository.js', () => ({
@@ -19,7 +19,7 @@ const mockedTaskRepository = vi.mocked(taskRepository);
 const userId = '550e8400-e29b-41d4-a716-446655440000';
 const taskId = '660e8400-e29b-41d4-a716-446655440000';
 
-const task: Task = {
+const task: TaskResponse = {
   id: taskId,
   userId,
   goalId: null,

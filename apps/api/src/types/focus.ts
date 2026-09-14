@@ -1,4 +1,4 @@
-import type { TaskPriority, TaskStatus } from '@prisma/client';
+import type { TaskPriority, TaskStatus } from './task.js';
 
 export interface SetTodayFocusInput {
   userId: string;

@@ -1,3 +1,5 @@
+import { Prisma } from '@prisma/client';
+
 import { prisma } from '../lib/prisma.js';
 
 import type {
@@ -39,7 +41,7 @@ export const goalRepository = {
   },
 
   async update(id: string, userId: string, input: UpdateGoalInput) {
-    return prisma.$transaction(async (tx) => {
+    return prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       const goal = await tx.goal.findFirst({
         where: {
           id,

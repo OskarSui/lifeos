@@ -1,4 +1,4 @@
-import type { GoalStatus } from '@prisma/client';
+export type GoalStatus = 'ACTIVE' | 'COMPLETED' | 'ARCHIVED';
 
 export interface CreateGoalInput {
   userId: string;

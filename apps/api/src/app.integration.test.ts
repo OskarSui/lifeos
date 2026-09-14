@@ -65,7 +65,10 @@ describe('Integration: GET /api/v1/tasks', () => {
     console.log('Created user:', user.id);
     console.log(
       'Created tasks:',
-      tasks.map((task) => ({ id: task.id, title: task.title })),
+      tasks.map((task: { id: string; title: string }) => ({
+        id: task.id,
+        title: task.title,
+      })),
     );
 
     expect(tasks).toHaveLength(2);

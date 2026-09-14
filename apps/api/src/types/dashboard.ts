@@ -1,11 +1,11 @@
-import type { Task } from '@prisma/client';
+import type { TaskResponse } from './task.js';
 
 export interface DashboardTask {
   id: string;
   title: string;
   description: string | null;
-  status: Task['status'];
-  priority: Task['priority'];
+  status: TaskResponse['status'];
+  priority: TaskResponse['priority'];
   dueDate: Date | null;
   completedAt: Date | null;
 }
