@@ -42,4 +42,4 @@ COPY prisma.config.ts ./
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "npx prisma generate && npx prisma migrate deploy && node dist/server.js"]
+CMD ["sh", "-c", "npx prisma generate && npx prisma migrate deploy && npx prisma db seed && node dist/server.js"]
