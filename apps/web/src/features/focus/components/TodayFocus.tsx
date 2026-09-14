@@ -1,6 +1,6 @@
 import type { Task } from "../../tasks/task.types";
 import type { TodayFocus } from "../focus.types";
-import { Card } from "../../../components/ui/card";
+import { Card } from "@/components/ui/card";
 
 interface TodayFocusProps {
   focus: TodayFocus | null;

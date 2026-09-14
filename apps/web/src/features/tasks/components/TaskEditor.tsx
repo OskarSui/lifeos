@@ -2,14 +2,14 @@ import { useState, type ChangeEvent, type FormEvent } from "react";
 
 import type { Task, TaskPriority } from "../task.types";
 import type { Goal } from "../../goals/goal.types";
-import { Input } from "../../../components/ui/input";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../../components/ui/select";
+} from "@/components/ui/select";
 
 interface TaskEditorProps {
   task: Task;
