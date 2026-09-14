@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type ChangeEvent, type FormEvent } from "react";
 import { Input } from "../../../components/ui/input";
 import { Button } from "../../../components/ui/button";
 
@@ -11,7 +11,7 @@ function QuickCapture({ onCreate, disabled = false }: QuickCaptureProps) {
   const [title, setTitle] = useState("");
   const [creating, setCreating] = useState(false);
 
-  async function handleSubmit(event: React.SubmitEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     const trimmedTitle = title.trim();
@@ -36,7 +36,7 @@ function QuickCapture({ onCreate, disabled = false }: QuickCaptureProps) {
       <div className="flex flex-col gap-2 sm:flex-row ">
         <Input
           value={title}
-          onChange={(event) => setTitle(event.target.value)}
+          onChange={(event: ChangeEvent<HTMLInputElement>) => setTitle(event.target.value)}
           placeholder="Capture an idea or task..."
           disabled={creating || disabled}
         />

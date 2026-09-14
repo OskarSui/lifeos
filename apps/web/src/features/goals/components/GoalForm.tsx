@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useState, type ChangeEvent, type FormEvent } from "react";
 import { Input } from "../../../components/ui/input";
 import { Button } from "../../../components/ui/button";
 
@@ -48,7 +48,7 @@ function GoalForm({ onCreate, disabled = false }: GoalFormProps) {
 
           <Input
             value={title}
-            onChange={(event) => setTitle(event.target.value)}
+            onChange={(event: ChangeEvent<HTMLInputElement>) => setTitle(event.target.value)}
             placeholder="e.g. Build my portfolio"
             disabled={creating || disabled}
           />
@@ -65,7 +65,9 @@ function GoalForm({ onCreate, disabled = false }: GoalFormProps) {
           <textarea
             id="goal-description"
             value={description}
-            onChange={(event) => setDescription(event.target.value)}
+            onChange={(event: ChangeEvent<HTMLTextAreaElement>) =>
+              setDescription(event.target.value)
+            }
             maxLength={5000}
             rows={3}
             disabled={disabled || creating}
