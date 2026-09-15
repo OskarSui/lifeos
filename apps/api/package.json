@@ -10,7 +10,6 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "postinstall": "prisma generate",
     "seed": "tsx prisma/seed.ts",
     "test": "vitest run --exclude src/**/*.integration.test.ts",
     "test:integration": "vitest run src/app.integration.test.ts",
