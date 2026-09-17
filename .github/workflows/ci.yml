@@ -169,19 +169,7 @@ jobs:
           file: ./apps/web/Dockerfile
           push: true
           build-args: |
-            VITE_API_URL=http://34.59.128.125:3000/api/v1
+            VITE_API_URL=/api/v1
           tags: |
             ghcr.io/oskarsui/lifeos-web:latest
             ghcr.io/oskarsui/lifeos-web:${{ github.sha }}
-
-    #     run: |
-    #       docker build \
-    #         -t lifeos-api \
-    #         ./apps/api
-
-    #   - name: Build Web image
-    #     run: |
-    #       docker build \
-    #         --build-arg VITE_API_URL=http://localhost:3000/api/v1 \
-    #         -t lifeos-web \
-    #         ./apps/web
