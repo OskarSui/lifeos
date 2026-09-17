@@ -1,18 +1,6 @@
 name: CI
 
 on:
-  push:
-    branches:
-      - main
-      - develop
-
-  pull_request:
-    branches:
-      - main
-      - develop
-
-# Cancel older runs for the same branch/PR.
-# If a new commit is pushed, we only care about the newest one.
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -139,19 +127,51 @@ jobs:
       - api
       - web
 
+    permissions:
+      contents: read
+      packages: write
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build API image
-        run: |
-          docker build \
-            -t lifeos-api \
-            ./apps/api
+      - name: Log in to GHR
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build Web image
-        run: |
-          docker build \
-            --build-arg VITE_API_URL=http://localhost:3000/api/v1 \
-            -t lifeos-web \
-            ./apps/web
+      - name: Build and push API image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./apps/api
+          file: ./apps/api/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/oskarsui/lifeos-api:latest
+            ghcr.io/oskarsui/lifeos-api:${{ github.sha }}
+
+      - name: Build and push Web image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./apps/web
+          file: ./apps/web/Dockerfile
+          push: true
+          build-args: |
+            VITE_API_URL=http://34.59.128.125:3000/api/v1
+          tags: |
+            ghcr.io/oskarsui/lifeos-web:latest
+            ghcr.io/oskarsui/lifeos-web:${{ github.sha }}
+
+    #     run: |
+    #       docker build \
+    #         -t lifeos-api \
+    #         ./apps/api
+
+    #   - name: Build Web image
+    #     run: |
+    #       docker build \
+    #         --build-arg VITE_API_URL=http://localhost:3000/api/v1 \
+    #         -t lifeos-web \
+    #         ./apps/web
