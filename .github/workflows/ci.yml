@@ -212,4 +212,5 @@ jobs:
              docker compose pull && \
              docker compose up -d --remove-orphans && \
              docker compose ps && \ 
-             docker compose exec -T api \ wget -qO- http://localhost:3000/health"
+             docker compose exec -T api \
+                node -e "fetch('http://localhost:3000/health').then(r => { if (!r.ok) process.exit(1); }).catch(() => process.exit(1))"
