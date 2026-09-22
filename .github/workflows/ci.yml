@@ -173,3 +173,43 @@ jobs:
           tags: |
             ghcr.io/oskarsui/lifeos-web:latest
             ghcr.io/oskarsui/lifeos-web:${{ github.sha }}
+
+  deploy:
+    name: Deploy to VPS
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+    needs: docker
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+
+          printf '%s\n' "${{ secrets.VPS_SSH_PRIVATE_KEY }}" > ~/.ssh/lifeos_github_actions
+          chmod 600 ~/.ssh/lifeos_github_actions
+
+          printf '%s\n' "${{ secrets.VPS_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      - name: Deploy
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          GHCR_USERNAME: ${{ secrets.GHCR_USERNAME }}
+          GHCR_READ_TOKEN: ${{ secrets.GHCR_READ_TOKEN }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          ssh \
+            -i ~/.ssh/lifeos_github_actions \
+            "$VPS_USER@$VPS_HOST" \
+            "export IMAGE_TAG='$IMAGE_TAG'; \
+             export GHCR_USERNAME='$GHCR_USERNAME'; \
+             export GHCR_READ_TOKEN='$GHCR_READ_TOKEN'; \
+             cd ~/lifeos/deploy && \
+             echo \"\$GHCR_READ_TOKEN\" | docker login ghcr.io -u \"\$GHCR_USERNAME\" --password-stdin && \
+             docker compose pull && \
+             docker compose up -d --remove-orphans && \
+             docker compose ps && \ 
+             docker compose exec -T api \ wget -qO- http://localhost:3000/health"
